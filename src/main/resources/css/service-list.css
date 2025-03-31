@@ -1,34 +1,48 @@
-/* Status-based row styling */
+/* Row styling for different statuses */
+.table-row-cell.status-pending,
 .status-pending {
-    -fx-background-color: #ffeeba;
+    -fx-background-color: #ffeeba !important;
 }
 
+.table-row-cell.status-confirmed,
 .status-confirmed {
-    -fx-background-color: #c3e6cb;
+    -fx-background-color: #c3e6cb !important;
 }
 
+.table-row-cell.status-completed,
 .status-completed {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
+    -fx-background-color: #6c757d !important;
 }
 
+.table-row-cell.status-completed .table-cell,
+.status-completed .table-cell {
+    -fx-text-fill: white !important;
+}
+
+.table-row-cell.status-cancelled,
 .status-cancelled {
-    -fx-background-color: #f5c6cb;
+    -fx-background-color: #f5c6cb !important;
 }
 
 /* Status badge styling */
 .status-badge {
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 4px;
     -fx-text-fill: white;
-    -fx-padding: 5px 10px;
-    -fx-background-radius: 5px;
+    -fx-alignment: center;
+    -fx-font-weight: normal;
+    -fx-font-size: 0.9em;
+    -fx-min-width: 100px;
+    -fx-max-width: 100px;
 }
 
 .status-badge-pending {
-    -fx-background-color: #ffc107;
+    -fx-background-color: #f0ad4e;
+    -fx-text-fill: #212529;
 }
 
 .status-badge-confirmed {
-    -fx-background-color: #28a745;
+    -fx-background-color: #5cb85c;
 }
 
 .status-badge-completed {
@@ -36,43 +50,173 @@
 }
 
 .status-badge-cancelled {
-    -fx-background-color: #dc3545;
+    -fx-background-color: #d9534f;
 }
 
-/* Tab styling */
-.tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color: #f8f9fa;
-}
-
-.tab-pane .tab {
-    -fx-background-color: #e9ecef;
-}
-
-.tab-pane .tab:selected {
-    -fx-background-color: white;
-    -fx-focus-color: transparent;
-}
-
-.tab-pane .tab:selected .tab-label {
-    -fx-font-weight: bold;
-}
-
-/* Table styling */
-.table-view .column-header {
-    -fx-background-color: #343a40;
-    -fx-text-fill: white;
+/* Table header styling */
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-background-color: #2c3e50;
+    -fx-border-width: 0 0.5px 0 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
 }
 
 .table-view .column-header .label {
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px;
 }
 
-/* Details view button */
-.view-details-button {
-    -fx-background-color: #6c757d;
+/* Remove default table border */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+}
+
+/* Cell padding */
+.table-cell {
+    -fx-padding: 8px;
+    -fx-alignment: center-left;
+}
+
+/* Status column alignment */
+.table-column#statusColumn .table-cell {
+    -fx-alignment: center;
+}
+
+/* Make sure selection doesn't override status colors */
+.table-row-cell:selected {
+    -fx-background-color: derive(-fx-selection-bar, 20%);
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell:selected.status-pending {
+    -fx-background-color: derive(#ffeeba, -5%) !important;
+}
+
+.table-row-cell:selected.status-confirmed {
+    -fx-background-color: derive(#c3e6cb, -5%) !important;
+}
+
+.table-row-cell:selected.status-completed {
+    -fx-background-color: derive(#6c757d, -5%) !important;
+}
+
+.table-row-cell:selected.status-cancelled {
+    -fx-background-color: derive(#f5c6cb, -5%) !important;
+}
+
+/* Override hover effect */
+.table-row-cell:hover {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:hover.status-pending {
+    -fx-background-color: derive(#ffeeba, -10%) !important;
+}
+
+.table-row-cell:hover.status-confirmed {
+    -fx-background-color: derive(#c3e6cb, -10%) !important;
+}
+
+.table-row-cell:hover.status-completed {
+    -fx-background-color: derive(#6c757d, -10%) !important;
+}
+
+.table-row-cell:hover.status-cancelled {
+    -fx-background-color: derive(#f5c6cb, -10%) !important;
+}
+
+/* Tab styling */
+.tab-pane {
+    -fx-tab-min-width: 100px;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 0;
+    -fx-padding: 5 15 5 15;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: #007bff;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Button styling */
+.button {
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-text-fill: #212529;
+}
+
+.button:hover {
+    -fx-background-color: #e2e6ea;
+    -fx-border-color: #dae0e5;
+}
+
+/* Primary button (New Service Request) */
+.button:default {
+    -fx-background-color: #007bff;
     -fx-text-fill: white;
+    -fx-border-color: #007bff;
 }
 
-.view-details-button:hover {
-    -fx-background-color: #5a6268;
+.button:default:hover {
+    -fx-background-color: #0069d9;
+    -fx-border-color: #0062cc;
+}
+
+/* Cancel button styling */
+.cancel-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-border-color: #dc3545;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #c82333;
+    -fx-border-color: #bd2130;
+}
+
+/* Make search field match the image */
+.text-field {
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+/* Date picker styling */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.date-picker .text-field {
+    -fx-border-width: 0;
+}
+
+/* Label styling for Start Date and End Date */
+.label {
+    -fx-text-fill: #212529;
 }

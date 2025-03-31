@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0"
+            styleClass="main-container" stylesheets="@../../css/main.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.management.controller.service.ServiceRequestViewController">
+    <top>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <Label styleClass="screen-title" text="Service Request">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label text="View Mode:"/>
+                <ToggleButton fx:id="wizardToggle" mnemonicParsing="false" selected="true" text="Wizard"/>
+                <ToggleButton fx:id="formToggle" mnemonicParsing="false" text="Form"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <StackPane fx:id="contentContainer" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+        </StackPane>
+    </center>
+    <bottom>
+        <HBox fx:id="wizardNavigation" alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
+            </padding>
+            <Button fx:id="prevButton" mnemonicParsing="false" styleClass="secondary-button" text="Previous"/>
+            <Button fx:id="nextButton" mnemonicParsing="false" styleClass="primary-button" text="Next"/>
+            <Button fx:id="finishButton" mnemonicParsing="false" styleClass="primary-button" text="Finish"
+                    visible="false"/>
+        </HBox>
+    </bottom>
+</BorderPane>

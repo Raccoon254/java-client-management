@@ -212,14 +212,17 @@ public class ServiceRequestListController {
                 protected void updateItem(ServiceRequest item, boolean empty) {
                     super.updateItem(item, empty);
 
+                    // First remove all status style classes
+                    getStyleClass().removeAll("status-pending", "status-confirmed",
+                            "status-completed", "status-cancelled");
+
                     if (item == null || empty) {
+                        setText(null);
                         setStyle("");
-                        getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
                         return;
                     }
 
-                    // Add style class based on status
-                    getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+                    // Apply the appropriate style class to the entire row
                     if (item.getStatus() != null) {
                         switch (item.getStatus()) {
                             case STATUS_PENDING:
