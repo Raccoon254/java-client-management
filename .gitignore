@@ -1,0 +1,6 @@
+target
+.idea
+*.log
+*.db
+*.sqlite3
+changes.txt
