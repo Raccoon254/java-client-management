@@ -21,6 +21,9 @@ public class GenericPageLoader {
     private final PaymentService paymentService;
     private final UserService userService;
 
+    // Navigation callback for dashboard
+    private DashboardController.DashboardNavigationCallback navigationCallback;
+
     /**
      * Constructor with all services
      */
@@ -40,6 +43,14 @@ public class GenericPageLoader {
     }
 
     /**
+     * Set the navigation callback
+     * @param callback The navigation callback
+     */
+    public void setNavigationCallback(DashboardController.DashboardNavigationCallback callback) {
+        this.navigationCallback = callback;
+    }
+
+    /**
      * Load the dashboard page
      * @param container The container to load into
      * @return true if successful
@@ -56,6 +67,11 @@ public class GenericPageLoader {
                     controller.setQuoteService(quoteService);
                     controller.setPaymentService(paymentService);
                     controller.setUserService(userService);
+
+                    // Set the navigation callback if available
+                    if (navigationCallback != null) {
+                        controller.setNavigationCallback(navigationCallback);
+                    }
                 },
                 "Error Loading Dashboard"
         );

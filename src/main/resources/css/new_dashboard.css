@@ -23,7 +23,7 @@
 /* Metric cards */
 .metric-card {
     -fx-background-color: white;
-    -fx-padding: 15px;
+    -fx-padding: 30px;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
@@ -168,7 +168,7 @@
 /* Top navigation bar */
 .top-nav-bar {
     -fx-background-color: #1d2957;
-    -fx-padding: 20px;
+    -fx-padding: 10px 20px;
     -fx-min-height: 50px;
 }
 
@@ -232,6 +232,7 @@
     -fx-background-color: white;
     -fx-border-color: #e9ecef;
     -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px 20px;
 }
 
 .back-button {
@@ -243,7 +244,7 @@
 }
 
 .back-button:hover {
-    -fx-text-fill: #2980b9;
+    -fx-text-fill: #fff;
 }
 
 .breadcrumb {
@@ -289,7 +290,7 @@
 /* Responsive adjustments */
 .dashboard-container.compact .metric-card {
     -fx-min-height: 100px;
-    -fx-padding: 10px;
+    -fx-padding: 30px;
 }
 
 .dashboard-container.compact .metric-title {

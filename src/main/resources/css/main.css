@@ -86,7 +86,7 @@
 }
 
 .back-button:hover {
-    -fx-text-fill: #2980b9;
+    -fx-text-fill: #fff;
 }
 
 .breadcrumb {

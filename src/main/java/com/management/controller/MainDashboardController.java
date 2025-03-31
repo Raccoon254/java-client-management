@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Controller for the main dashboard
  */
-public class MainDashboardController {
+public class MainDashboardController implements DashboardController.DashboardNavigationCallback {
     // Main content areas
     @FXML
     private BorderPane mainBorderPane;
@@ -106,6 +106,9 @@ public class MainDashboardController {
                 paymentService,
                 userService
         );
+
+        // Set this controller as the navigation callback for dashboard
+        pageLoader.setNavigationCallback(this);
 
         // Set up navigation handlers
         if (createButton != null) {
@@ -313,6 +316,37 @@ public class MainDashboardController {
         if (pageLoader.loadSettingsPage(contentArea)) {
             updateBreadcrumb("Home > Settings");
         }
+    }
+
+    // Dashboard navigation callback implementations
+    @Override
+    public void navigateToCustomers() {
+        showCustomers();
+    }
+
+    @Override
+    public void navigateToTechnicians() {
+        showTechnicians();
+    }
+
+    @Override
+    public void navigateToServiceRequests() {
+        showServiceRequests();
+    }
+
+    @Override
+    public void navigateToPayments() {
+        showPayments();
+    }
+
+    @Override
+    public void navigateToReports() {
+        showReports();
+    }
+
+    @Override
+    public void navigateToSettings() {
+        showSettings();
     }
 
     /**

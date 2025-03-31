@@ -18,6 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -64,6 +65,26 @@ public class DashboardController {
     private PaymentService paymentService;
     private UserService userService;
     private boolean servicesInitialized = false;
+
+    private DashboardNavigationCallback navigationCallback;
+
+    // Interface for navigation callbacks
+    public interface DashboardNavigationCallback {
+        void navigateToCustomers();
+        void navigateToTechnicians();
+        void navigateToServiceRequests();
+        void navigateToPayments();
+        void navigateToReports();
+        void navigateToSettings();
+    }
+
+    /**
+     * Set the navigation callback
+     * @param callback The navigation callback
+     */
+    public void setNavigationCallback(DashboardNavigationCallback callback) {
+        this.navigationCallback = callback;
+    }
 
     /**
      * Set the customer service
@@ -547,6 +568,84 @@ public class DashboardController {
         } catch (Exception e) {
             AlertUtils.showErrorAlert("Error", "Failed to load dashboard data: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handle click on Clients/Customers card
+     */
+    @FXML
+    public void openCustomers(MouseEvent event) {
+        System.out.println("Customers card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToCustomers();
+        } else {
+            System.err.println("Navigation callback not set for customers");
+        }
+    }
+
+    /**
+     * Handle click on Technicians card
+     */
+    @FXML
+    public void openTechnicians(MouseEvent event) {
+        System.out.println("Technicians card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToTechnicians();
+        } else {
+            System.err.println("Navigation callback not set for technicians");
+        }
+    }
+
+    /**
+     * Handle click on Projects/Service Requests card
+     */
+    @FXML
+    public void openServiceRequests(MouseEvent event) {
+        System.out.println("Projects/Service Requests card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToServiceRequests();
+        } else {
+            System.err.println("Navigation callback not set for service requests");
+        }
+    }
+
+    /**
+     * Handle click on Invoices/Payments card
+     */
+    @FXML
+    public void openPayments(MouseEvent event) {
+        System.out.println("Invoices/Payments card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToPayments();
+        } else {
+            System.err.println("Navigation callback not set for payments");
+        }
+    }
+
+    /**
+     * Handle click on Reports card
+     */
+    @FXML
+    public void openReports(MouseEvent event) {
+        System.out.println("Reports card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToReports();
+        } else {
+            System.err.println("Navigation callback not set for reports");
+        }
+    }
+
+    /**
+     * Handle click on Settings card
+     */
+    @FXML
+    public void openSettings(MouseEvent event) {
+        System.out.println("Settings card clicked");
+        if (navigationCallback != null) {
+            navigationCallback.navigateToSettings();
+        } else {
+            System.err.println("Navigation callback not set for settings");
         }
     }
 

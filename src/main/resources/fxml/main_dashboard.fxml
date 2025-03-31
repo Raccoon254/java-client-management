@@ -59,7 +59,7 @@
             </HBox>
 
             <!-- Breadcrumb navigation -->
-            <HBox styleClass="breadcrumb-bar">
+            <HBox alignment="CENTER_LEFT" styleClass="breadcrumb-bar">
                 <padding>
                     <Insets left="20.0" right="20.0" top="10.0" bottom="10.0"/>
                 </padding>

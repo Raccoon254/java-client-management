@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
 <VBox spacing="20.0" styleClass="dashboard-container" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.DashboardController">
     <padding>
@@ -23,7 +24,7 @@
 
     <!-- Welcome section -->
     <VBox spacing="5.0">
-        <Label styleClass="welcome-title" text="Good Morning, Alexander!">
+        <Label fx:id="welcomeLabel" styleClass="welcome-title" text="Good Morning, Admin!">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>
@@ -49,38 +50,38 @@
         </rowConstraints>
 
         <!-- Total Clients -->
-        <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="0">
+        <VBox onMouseClicked="#openCustomers" alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="0">
             <ImageView fx:id="clientsIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Total Clients" />
-            <Label fx:id="totalCustomersLabel" styleClass="metric-value, loading" text="--" />
+            <Label fx:id="totalCustomersLabel" styleClass="metric-value" text="--" />
         </VBox>
 
         <!-- Technicians -->
-        <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="1">
+        <VBox onMouseClicked="#openTechnicians" alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="1">
             <ImageView fx:id="techniciansIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Technicians" />
-            <Label fx:id="totalTechniciansLabel" styleClass="metric-value" text="15" />
+            <Label fx:id="totalTechniciansLabel" styleClass="metric-value" text="--" />
         </VBox>
 
         <!-- Total Projects/Service Requests -->
-        <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="2">
+        <VBox onMouseClicked="#openServiceRequests" alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="2">
             <ImageView fx:id="projectsIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Total Projects" />
-            <Label fx:id="activeServiceRequestsLabel" styleClass="metric-value" text="15" />
+            <Label fx:id="activeServiceRequestsLabel" styleClass="metric-value" text="--" />
         </VBox>
 
         <!-- Unpaid Invoices/Pending Payments -->
-        <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="3">
+        <VBox onMouseClicked="#openPayments" alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="3">
             <ImageView fx:id="invoicesIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Unpaid Invoices" />
-            <Label fx:id="pendingPaymentsLabel" styleClass="metric-value" text="7" />
+            <Label fx:id="pendingPaymentsLabel" styleClass="metric-value" text="--" />
         </VBox>
 
         <!-- Pending Tasks -->
         <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="4">
             <ImageView fx:id="tasksIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Pending Tasks" />
-            <Label styleClass="metric-value" text="39" />
+            <Label fx:id="pendingTasksLabel" styleClass="metric-value" text="--" />
         </VBox>
     </GridPane>
 
@@ -96,22 +97,23 @@
         <rowConstraints>
             <RowConstraints minHeight="110.0" prefHeight="130.0" vgrow="SOMETIMES" />
         </rowConstraints>
+
         <!-- Hours Logged -->
         <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="0">
             <ImageView fx:id="hoursIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Hours Logged" />
-            <Label styleClass="metric-value, large-value" text="381 hrs 27 mins" />
+            <Label fx:id="hoursLoggedLabel" styleClass="metric-value" text="--" />
         </VBox>
 
         <!-- Reports -->
-        <VBox alignment="CENTER" styleClass="metric-card, action-metric" GridPane.columnIndex="1">
+        <VBox alignment="CENTER" styleClass="metric-card, action-metric" GridPane.columnIndex="1" onMouseClicked="#openReports">
             <ImageView fx:id="reportsIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Reports" />
             <Button styleClass="metric-action-button" text="Generate Report" onAction="#handleGenerateReport" />
         </VBox>
 
         <!-- Settings -->
-        <VBox alignment="CENTER" styleClass="metric-card, action-metric" GridPane.columnIndex="2">
+        <VBox onMouseClicked="#openSettings" alignment="CENTER" styleClass="metric-card, action-metric" GridPane.columnIndex="2">
             <ImageView fx:id="settingsIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
             <Label styleClass="metric-title" text="Settings" />
             <Button styleClass="metric-action-button" text="System Settings" />
@@ -120,7 +122,7 @@
 
     <Separator />
 
-    <!-- Charts row -->
+    <!-- Charts row - top -->
     <HBox spacing="15.0" VBox.vgrow="ALWAYS">
         <!-- Recent Earnings Chart -->
         <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
@@ -129,25 +131,61 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <AnchorPane styleClass="chart-placeholder" VBox.vgrow="ALWAYS">
-                <Label styleClass="placeholder-text" text="Chart Placeholder"
-                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                       AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" />
-            </AnchorPane>
+            <AreaChart fx:id="earningsChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis fx:id="earningsXAxis" label="Date" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="earningsYAxis" label="Amount ($)" />
+                </yAxis>
+            </AreaChart>
         </VBox>
 
-        <!-- Tasks Performance Chart -->
+        <!-- Service Request Status Chart -->
         <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
-            <Label styleClass="chart-title" text="Tasks Performance">
+            <Label styleClass="chart-title" text="Service Request Status">
                 <font>
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <AnchorPane styleClass="chart-placeholder" VBox.vgrow="ALWAYS">
-                <Label styleClass="placeholder-text" text="Chart Placeholder"
-                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                       AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" />
-            </AnchorPane>
+            <PieChart fx:id="statusChart" animated="false" labelLineLength="20" labelsVisible="true" legendSide="RIGHT" VBox.vgrow="ALWAYS" />
+        </VBox>
+    </HBox>
+
+    <!-- Charts row - bottom -->
+    <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+        <!-- Technician Performance Chart -->
+        <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
+            <Label styleClass="chart-title" text="Technician Performance">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+            <BarChart fx:id="technicianChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis fx:id="technicianXAxis" label="Technician" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="technicianYAxis" label="Completed Tasks" />
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <!-- Monthly Service Trends -->
+        <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
+            <Label styleClass="chart-title" text="Monthly Service Trends">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+            <BarChart fx:id="monthlyTrendsChart" animated="false" legendVisible="true" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis fx:id="monthlyTrendsXAxis" label="Month" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="monthlyTrendsYAxis" label="Service Requests" />
+                </yAxis>
+            </BarChart>
         </VBox>
     </HBox>
 </VBox>
