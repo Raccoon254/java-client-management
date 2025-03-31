@@ -19,6 +19,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.util.Objects;
 
 import java.time.LocalDate;
@@ -142,8 +144,63 @@ public class DashboardController {
      */
     @FXML
     public void initialize() {
-        // Load icons
+        // Try a direct approach with test image first
+        try {
+            if (clientsIcon != null) {
+                // Hardcode a simple test image directly in FXML-accessible code
+                String directPath = "/images/icons/user-circle-svgrepo-com.png";
+                System.out.println("Trying direct icon loading from: " + directPath);
+
+                Image testImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(directPath)));
+                clientsIcon.setImage(testImage);
+
+                System.out.println("Test image set directly. Image details: width=" +
+                        testImage.getWidth() + ", height=" + testImage.getHeight());
+            }
+        } catch (Exception e) {
+            System.err.println("Direct image loading test failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+        listAllResources();
+
+        // Then continue with normal icon loading
         loadIcons();
+    }
+
+    private void listAllResources() {
+        try {
+            // Print the classpath for debugging
+            System.out.println("Java Classpath:");
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(System.getProperty("path.separator"));
+            for (String entry : classpathEntries) {
+                System.out.println("  " + entry);
+            }
+
+            // Try to list resources in the images directory
+            System.out.println("\nTrying to list resources in images directory:");
+            try {
+                var url = getClass().getClassLoader().getResource("images");
+                if (url != null) {
+                    try {
+                        var file = new java.io.File(url.toURI());
+                        if (file.isDirectory()) {
+                            for (File f : file.listFiles()) {
+                                System.out.println("  " + f.getName());
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("  Error listing directory: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("  images directory not found");
+                }
+            } catch (Exception e) {
+                System.out.println("  Error accessing images directory: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.out.println("Error listing resources: " + e.getMessage());
+        }
     }
 
     /**
@@ -151,38 +208,59 @@ public class DashboardController {
      */
     private void loadIcons() {
         try {
-            // Load icons using Class.getResource to ensure proper classpath loading
+            // Direct approach with extensive debugging
             if (clientsIcon != null) {
-                clientsIcon.setImage(loadImage("/images/icons/user-circle-svgrepo-com.png"));
+                try {
+                    var stream = getClass().getResourceAsStream("/images/icons/user-circle-svgrepo-com.png");
+                    if (stream == null) {
+                        System.err.println("Resource stream is null for clients icon!");
+                    } else {
+                        System.out.println("Found resource for clients icon");
+
+                        // Create image and check its properties
+                        Image image = new Image(stream);
+                        System.out.println("Image loaded: width=" + image.getWidth() +
+                                ", height=" + image.getHeight() +
+                                ", error=" + image.isError());
+
+                        // Set the image and verify ImageView properties
+                        clientsIcon.setImage(image);
+                        System.out.println("ImageView properties: fitWidth=" + clientsIcon.getFitWidth() +
+                                ", fitHeight=" + clientsIcon.getFitHeight() +
+                                ", visible=" + clientsIcon.isVisible() +
+                                ", managed=" + clientsIcon.isManaged() +
+                                ", opacity=" + clientsIcon.getOpacity());
+
+                        // Force ImageView properties if needed
+                        clientsIcon.setPreserveRatio(true);
+                        clientsIcon.setSmooth(true);
+                        clientsIcon.setCache(true);
+                        clientsIcon.setVisible(true);
+                        clientsIcon.setOpacity(1.0);
+
+                        // Get parent information
+                        if (clientsIcon.getParent() != null) {
+                            System.out.println("Parent: " + clientsIcon.getParent().getClass().getName() +
+                                    ", visible=" + clientsIcon.getParent().isVisible());
+                        } else {
+                            System.out.println("No parent found for clientsIcon");
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error with clients icon: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
 
-            if (techniciansIcon != null) {
-                techniciansIcon.setImage(loadImage("/images/icons/bolt-svgrepo-com.png"));
-            }
+            // Similar approach for other icons...
+            loadIconWithDebug(techniciansIcon, "/images/icons/bolt-svgrepo-com.png", "technicians");
+            loadIconWithDebug(projectsIcon, "/images/icons/routing-2-svgrepo-com.png", "projects");
+            loadIconWithDebug(invoicesIcon, "/images/icons/transfer-vertical-svgrepo-com.png", "invoices");
+            loadIconWithDebug(tasksIcon, "/images/icons/clock-circle-svgrepo-com.png", "tasks");
+            loadIconWithDebug(hoursIcon, "/images/icons/alarm-add-svgrepo-com.png", "hours");
+            loadIconWithDebug(reportsIcon, "/images/icons/graph-new-up-svgrepo-com.png", "reports");
+            loadIconWithDebug(settingsIcon, "/images/icons/settings-minimalistic-svgrepo-com.png", "settings");
 
-            if (projectsIcon != null) {
-                projectsIcon.setImage(loadImage("/images/icons/routing-2-svgrepo-com.png"));
-            }
-
-            if (invoicesIcon != null) {
-                invoicesIcon.setImage(loadImage("/images/icons/transfer-vertical-svgrepo-com.png"));
-            }
-
-            if (tasksIcon != null) {
-                tasksIcon.setImage(loadImage("/images/icons/clock-circle-svgrepo-com.png"));
-            }
-
-            if (hoursIcon != null) {
-                hoursIcon.setImage(loadImage("/images/icons/alarm-add-svgrepo-com.png"));
-            }
-
-            if (reportsIcon != null) {
-                reportsIcon.setImage(loadImage("/images/icons/graph-new-up-svgrepo-com.png"));
-            }
-
-            if (settingsIcon != null) {
-                settingsIcon.setImage(loadImage("/images/icons/settings-minimalistic-svgrepo-com.png"));
-            }
         } catch (Exception e) {
             System.err.println("Error loading icons: " + e.getMessage());
             e.printStackTrace();
@@ -193,19 +271,73 @@ public class DashboardController {
     }
 
     /**
+     * Helper method to load an icon with detailed debugging
+     */
+    private void loadIconWithDebug(ImageView imageView, String path, String iconName) {
+        if (imageView == null) {
+            System.out.println(iconName + " ImageView is null");
+            return;
+        }
+
+        try {
+            var stream = getClass().getResourceAsStream(path);
+            if (stream == null) {
+                System.err.println("Resource stream is null for " + iconName + " icon!");
+            } else {
+                System.out.println("Found resource for " + iconName + " icon");
+
+                // Create and set the image
+                Image image = new Image(stream);
+                System.out.println(iconName + " image loaded: width=" + image.getWidth() +
+                        ", height=" + image.getHeight() +
+                        ", error=" + image.isError());
+
+                imageView.setImage(image);
+
+                // Force ImageView properties
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.setCache(true);
+                imageView.setVisible(true);
+                imageView.setOpacity(1.0);
+            }
+        } catch (Exception e) {
+            System.err.println("Error with " + iconName + " icon: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    /**
      * Load an image from the classpath
      * @param path Path to the image within the classpath
      * @return The Image object
      */
     private Image loadImage(String path) {
         try {
-            System.out.println("Attempting to load image from: " + path);
-            var stream = getClass().getResourceAsStream(path);
-            if (stream == null) {
-                System.out.println("Stream is null for path: " + path);
+
+            // Example with debug output for one icon
+            if (clientsIcon != null) {
+                var stream = getClass().getResourceAsStream("/images/icons/user-circle-svgrepo-com.png");
+                if (stream == null) {
+                    System.err.println("Resource stream is null for clients icon!");
+                } else {
+                    System.out.println("Found resource for clients icon");
+                    clientsIcon.setImage(new Image(stream));
+                }
+            }
+
+            // Remove leading slash to use class-relative path
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+
+            // Try different class loader approaches
+            var url = getClass().getClassLoader().getResource(path);
+            if (url != null) {
+                return new Image(url.toExternalForm());
+            } else {
+                System.err.println("Could not find resource: " + path);
                 return null;
             }
-            return new Image(stream);
         } catch (Exception e) {
             System.err.println("Could not load image from path: " + path);
             e.printStackTrace();
