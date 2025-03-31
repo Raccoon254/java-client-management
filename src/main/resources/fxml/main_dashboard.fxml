@@ -11,6 +11,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
 <BorderPane fx:id="mainBorderPane" prefHeight="768.0" prefWidth="1024.0" stylesheets="@../css/main.css,@../css/new_dashboard.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.MainDashboardController">
     <!-- Top navigation bar -->
     <top>
@@ -23,8 +24,7 @@
 
                 <!-- Logo and company name -->
                 <HBox alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
-                    <SVGPath content="M24 5.329v11.83c0 1.3-.37 2.287-1.108 2.962-.738.674-1.791 1.012-3.158 1.012-.174 0-.41-.036-.71-.106a5.251 5.251 0 0 1-.966-.307 5.43 5.43 0 0 1-.895-.458 4.48 4.48 0 0 1-.675-.537V22H13v-16.67h4.488v1.542c.088-.094.224-.2.407-.317.183-.118.442-.242.779-.371.337-.13.74-.24 1.207-.33.469-.089.983-.134 1.545-.134 1.307 0 2.324.339 3.052 1.015.728.677 1.092 1.633 1.092 2.867V10zm-4.33-1.812c-.208-.26-.557-.39-1.045-.39-.4 0-.764.118-1.090.353-.326.236-.542.56-.646.974v6.693c.13.414.35.734.662.962.312.227.67.34 1.074.34.372 0 .698-.11.979-.33.28-.221.42-.558.42-1.01V4.992c0-.487-.146-.874-.354-1.134V3.517z"
-                             styleClass="company-logo"/>
+                    <ImageView fx:id="logo_icon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
                     <Label text="Client Management" styleClass="company-name"/>
                 </HBox>
 

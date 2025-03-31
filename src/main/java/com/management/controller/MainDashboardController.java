@@ -14,6 +14,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -41,6 +43,9 @@ public class MainDashboardController {
 
     @FXML
     private Button requestsButton;
+
+    @FXML
+    private ImageView logo_icon;
 
     @FXML
     private Button messagesButton;
@@ -123,10 +128,85 @@ public class MainDashboardController {
             backButton.setOnAction(e -> navigateBack());
         }
 
+        loadLogoIcon();
+
         // Default to dashboard view
         showDashboard();
     }
 
+    //grasshopper-svgrepo-com.png
+    /**
+     * Loads the company logo icon into the logo_icon ImageView.
+     */
+    private void loadLogoIcon() {
+        // Check if the ImageView is initialized
+        if (logo_icon == null) {
+            System.out.println("logo_icon ImageView is null");
+            return;
+        }
+
+        try {
+            // Define the path to the company logo image in resources
+            String path = "/images/icons/grasshopper-svgrepo-com.png"; // Adjust this path based on your actual file location
+            var stream = getClass().getResourceAsStream(path);
+
+            if (stream == null) {
+                System.err.println("Resource stream is null for logo icon at path: " + path);
+                setFallbackLogo();
+            } else {
+                Image image = new Image(stream);
+                if (image.isError()) {
+                    System.err.println("Error loading logo image from " + path);
+                    setFallbackLogo();
+                } else {
+                    logo_icon.setImage(image);
+                    // Configure ImageView properties for optimal display
+                    logo_icon.setPreserveRatio(true);
+                    logo_icon.setSmooth(true);
+                    logo_icon.setCache(true);
+                    logo_icon.setVisible(true);
+                    logo_icon.setOpacity(1.0);
+                    System.out.println("Company logo loaded successfully: width=" + image.getWidth() +
+                            ", height=" + image.getHeight());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading logo icon: " + e.getMessage());
+            e.printStackTrace();
+            setFallbackLogo();
+        }
+    }
+
+    /**
+     * Sets a fallback logo if the primary logo fails to load.
+     */
+    private void setFallbackLogo() {
+        try {
+            // Attempt to load a default logo image
+            String defaultPath = "/images/icons/grasshopper-svgrepo-com.png"; // Adjust this path as needed
+            var defaultStream = getClass().getResourceAsStream(defaultPath);
+            if (defaultStream != null) {
+                Image defaultImage = new Image(defaultStream);
+                logo_icon.setImage(defaultImage);
+                System.out.println("Fallback logo loaded from " + defaultPath);
+            } else {
+                System.err.println("Default logo not found at " + defaultPath);
+                // Use an SVG path as a last resort
+                if (logo_icon.getParent() instanceof javafx.scene.layout.Pane) {
+                    javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) logo_icon.getParent();
+                    parent.getChildren().remove(logo_icon);
+
+                    javafx.scene.shape.SVGPath svgPath = new javafx.scene.shape.SVGPath();
+                    svgPath.setContent("M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"); // Simple house icon SVG
+                    svgPath.setFill(javafx.scene.paint.Color.valueOf("#3498db")); // Blue color
+                    parent.getChildren().add(svgPath);
+                    System.out.println("Fallback SVG logo set");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error setting fallback logo: " + e.getMessage());
+        }
+    }
     /**
      * Initialize the user
      * @param user The logged-in user
