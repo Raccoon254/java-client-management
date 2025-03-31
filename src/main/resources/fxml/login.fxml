@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="Infinity" prefWidth="Infinity" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.LoginController">
+    <top>
+        <VBox alignment="CENTER" prefHeight="100.0" BorderPane.alignment="CENTER">
+            <Label styleClass="title-label" text="Client Management System">
+                <font>
+                    <Font name="System Bold" size="24.0"/>
+                </font>
+            </Label>
+            <Label styleClass="subtitle-label" text="Login to your account">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+        </VBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" maxWidth="600" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <VBox prefWidth="300.0" spacing="10.0">
+                <Label styleClass="form-label" text="Username:"/>
+                <TextField fx:id="usernameField" promptText="Enter your username"/>
+                <Label fx:id="usernameError" styleClass="error-label" text="Username is required" visible="false"/>
+            </VBox>
+            <VBox prefWidth="300.0" spacing="10.0">
+                <Label styleClass="form-label" text="Password:"/>
+                <PasswordField fx:id="passwordField" promptText="Enter your password"/>
+                <Label fx:id="passwordError" styleClass="error-label" text="Password is required" visible="false"/>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" prefWidth="300.0">
+                <CheckBox fx:id="rememberMeCheckbox" mnemonicParsing="false" text="Remember me"/>
+            </HBox>
+            <Button fx:id="loginButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin"
+                    prefHeight="40.0" prefWidth="300.0" styleClass="primary-button" text="Login">
+                <font>
+                    <Font name="System Bold" size="14.0"/>
+                </font>
+            </Button>
+            <Label fx:id="statusMessage" alignment="CENTER" prefWidth="300.0" styleClass="status-message"
+                   textAlignment="CENTER"/>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="50.0" BorderPane.alignment="CENTER">
+            <Label styleClass="footer-label" text="© 2025 Client Management System. All rights reserved."/>
+        </HBox>
+    </bottom>
+</BorderPane>

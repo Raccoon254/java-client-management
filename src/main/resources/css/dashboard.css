@@ -1,0 +1,544 @@
+/* ========== DASHBOARD STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap');
+
+/* Main container styles */
+.dashboard-container {
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+    -fx-background-color: #f8f9fa;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 1px 0 0;
+}
+
+.sidebar-header {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 15px 10px;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Navigation Buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #495057;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+    -fx-min-width: 200px;
+    -fx-cursor: hand;
+    -fx-font-weight: normal;
+    -fx-border-radius: 0px !important;
+}
+
+.nav-button:hover {
+    -fx-background-color: #edf2f7;
+}
+
+.active-nav-button {
+    -fx-background-color: #e1f0ff;
+    -fx-border-color: transparent transparent #3498db transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3498db;
+}
+
+.active-nav-button:hover {
+    -fx-background-color: #d0e8ff;
+}
+
+/* Navigation Icons */
+.nav-icon {
+    -fx-fill: #6c757d;
+    -fx-opacity: 0.9;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.active-nav-button .nav-icon {
+    -fx-fill: #3498db;
+    -fx-opacity: 1;
+}
+
+/* Profile and Logout buttons */
+.profile-button, .logout-button {
+    -fx-min-width: 200px;
+    -fx-background-color: #edf2f7;
+    -fx-text-fill: #495057;
+    -fx-effect: none;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.profile-button:hover, .logout-button:hover {
+    -fx-background-color: #dbe1e6;
+}
+
+.logout-button {
+    -fx-background-color: #ffeeee;
+    -fx-text-fill: #e74c3c;
+    -fx-border-color: #ffd5d5;
+}
+
+.logout-button:hover {
+    -fx-background-color: #ffd5d5;
+}
+
+/* ========== METRIC CARDS ========== */
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-min-height: 120px;
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.dashboard-card.primary {
+    -fx-border-color: #3498db;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.dashboard-card.success {
+    -fx-border-color: #2ecc71;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.dashboard-card.warning {
+    -fx-border-color: #f39c12;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.dashboard-card.danger {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.card-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #868e96;
+    -fx-font-weight: normal;
+}
+
+.card-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.dashboard-card.primary .card-value {
+    -fx-text-fill: #3498db;
+}
+
+.dashboard-card.success .card-value {
+    -fx-text-fill: #2ecc71;
+}
+
+.dashboard-card.warning .card-value {
+    -fx-text-fill: #f39c12;
+}
+
+.dashboard-card.danger .card-value {
+    -fx-text-fill: #e74c3c;
+}
+
+/* ========== CHARTS CONTAINER ========== */
+.chart-container {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-min-height: 300px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+}
+
+.widget-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3b4a54;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* ========== TABLE CONTAINER ========== */
+.table-container {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-min-height: 300px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+}
+
+/* Dashboard specific table styles */
+.dashboard-table {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.dashboard-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-font-weight: bold;
+    -fx-padding: 8px;
+}
+
+.dashboard-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #f5f7f9 transparent;
+}
+
+.dashboard-table .table-row-cell:hover {
+    -fx-background-color: #edf8ff;
+}
+
+/* ========== QUICK ACTIONS ========== */
+.quick-actions-container {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+    -fx-min-height: 100px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+}
+
+.action-button {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #495057;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 15px;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+    -fx-effect: none;
+}
+
+.action-button:hover {
+    -fx-background-color: #edf2f7;
+    -fx-border-color: #c7cfd8;
+}
+
+/* ========== CONTENT AREA ========== */
+.content-scrollpane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background: transparent;
+}
+
+.content-scrollpane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ========== SVG ICONS ========== */
+.icon-dashboard {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-customers {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-technicians {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-service-requests {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-quotes {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-payments {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-reports {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.icon-settings {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* ========== STATUS INDICATORS ========== */
+.status-indicator {
+    -fx-background-radius: 8px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.status-indicator.pending {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+}
+
+.status-indicator.scheduled {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: white;
+}
+
+.status-indicator.in-progress {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.status-indicator.completed {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+}
+
+.status-indicator.cancelled {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+/* ========== DASHBOARD MODALS ========== */
+.dashboard-modal {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 5);
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.dashboard-modal .title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.dashboard-modal .content {
+    -fx-padding: 15px 0;
+}
+
+.dashboard-modal .footer {
+    -fx-padding: 10px 0 0 0;
+    -fx-alignment: center-right;
+    -fx-spacing: 10px;
+}
+
+/* ========== NOTIFICATION BADGE ========== */
+.notification-badge {
+    -fx-background-color: #e74c3c;
+    -fx-background-radius: 50%;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-padding: 2px 6px;
+    -fx-font-weight: bold;
+}
+
+/* ========== PROGRESS INDICATORS ========== */
+.progress-indicator {
+    -fx-progress-color: #3498db;
+}
+
+.progress-indicator.success {
+    -fx-progress-color: #2ecc71;
+}
+
+.progress-indicator.warning {
+    -fx-progress-color: #f39c12;
+}
+
+.progress-indicator.danger {
+    -fx-progress-color: #e74c3c;
+}
+
+/* ========== DATA VISUALIZATION COLORS ========== */
+/* Use these colors for consistency across charts */
+.chart-data-1 { -fx-background-color: #3498db; }
+.chart-data-2 { -fx-background-color: #2ecc71; }
+.chart-data-3 { -fx-background-color: #f39c12; }
+.chart-data-4 { -fx-background-color: #e74c3c; }
+.chart-data-5 { -fx-background-color: #9b59b6; }
+
+/* ========== RESPONSIVE LAYOUT ADJUSTMENTS ========== */
+/* Small screen adjustments */
+.dashboard-container.compact .dashboard-card {
+    -fx-min-height: 100px;
+}
+
+.dashboard-container.compact .card-title {
+    -fx-font-size: 12px;
+}
+
+.dashboard-container.compact .card-value {
+    -fx-font-size: 24px;
+}
+
+/* ========== USER PROFILE SECTION ========== */
+.user-profile {
+    -fx-background-color: #edf2f7;
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-alignment: center;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.user-profile-name {
+    -fx-text-fill: #3b4a54;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.user-profile-role {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 12px;
+    -fx-opacity: 0.9;
+}
+
+.user-avatar {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 50%;
+    -fx-padding: 8px;
+    -fx-alignment: center;
+}
+
+.user-avatar-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* ========== CUSTOM SCROLL BAR FOR SIDEBAR ========== */
+.sidebar .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 0 4px;
+}
+
+.sidebar .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.sidebar .scroll-bar:vertical .thumb {
+    -fx-background-color: #c5c9cc;
+    -fx-background-radius: 10px;
+}
+
+.sidebar .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #a8acb0;
+}
+
+.sidebar .scroll-bar:vertical .increment-button,
+.sidebar .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.sidebar .scroll-bar:vertical .increment-arrow,
+.sidebar .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+/* ========== DASHBOARD CALENDAR ========== */
+.calendar-cell {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-padding: 5px;
+}
+
+.calendar-cell:hover {
+    -fx-background-color: #edf8ff;
+}
+
+.calendar-cell.today {
+    -fx-background-color: #e1f0ff;
+    -fx-border-color: #3498db;
+}
+
+.calendar-cell.has-events {
+    -fx-border-color: #3498db;
+    -fx-border-width: 0 0 2px 0;
+}
+
+.calendar-header {
+    -fx-background-color: #f1f3f4;
+    -fx-padding: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-font-weight: bold;
+}
+
+.calendar-day-header {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 5px;
+    -fx-border-color: #e9ecef;
+    -fx-font-weight: bold;
+}
+
+/* ========== DASHBOARD LIST ITEMS ========== */
+.dashboard-list-item {
+    -fx-background-color: white;
+    -fx-padding: 10px;
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.dashboard-list-item:hover {
+    -fx-background-color: #edf8ff;
+}
+
+.dashboard-list-item-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #3b4a54;
+}
+
+.dashboard-list-item-subtitle {
+    -fx-text-fill: #868e96;
+    -fx-font-size: 12px;
+}
+
+/* ========== SEARCH BOX ========== */
+.search-box {
+    -fx-background-color: #edf2f7;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-padding: 8px 15px;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-text-fill: #495057;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+}
+
+.search-box:focused {
+    -fx-background-color: #e1f0ff;
+    -fx-border-color: #3498db;
+}

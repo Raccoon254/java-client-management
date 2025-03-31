@@ -1,0 +1,301 @@
+/* ========== NEW DASHBOARD STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap');
+
+/* Main container styles */
+.dashboard-container {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 30px;
+    -fx-spacing: 25px;
+}
+
+/* Welcome section */
+.welcome-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.welcome-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #6c757d;
+}
+
+/* Metric cards */
+.metric-card {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+    -fx-min-height: 120px;
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.metric-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-background-color: #fafbfc;
+}
+
+.metric-icon {
+    -fx-fill: #6c757d;
+    -fx-opacity: 0.8;
+    -fx-scale-x: 1.8;
+    -fx-scale-y: 1.8;
+}
+
+.clients-icon {
+    -fx-fill: #3498db;
+}
+
+.technicians-icon {
+    -fx-fill: #2ecc71;
+}
+
+.projects-icon {
+    -fx-fill: #f39c12;
+}
+
+.invoices-icon {
+    -fx-fill: #e74c3c;
+}
+
+.tasks-icon {
+    -fx-fill: #9b59b6;
+}
+
+.hours-icon {
+    -fx-fill: #34495e;
+}
+
+.reports-icon {
+    -fx-fill: #16a085;
+}
+
+.settings-icon {
+    -fx-fill: #7f8c8d;
+}
+
+.metric-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6c757d;
+    -fx-font-weight: normal;
+    -fx-padding: 5px 0 0 0;
+}
+
+.metric-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.large-value {
+    -fx-font-size: 22px;
+}
+
+/* Loading placeholder for metrics */
+.loading {
+    -fx-text-fill: #bdc3c7;
+}
+
+/* Action metrics */
+.action-metric {
+    -fx-spacing: 5px;
+}
+
+.metric-action-button {
+    -fx-background-color: #edf2f7;
+    -fx-text-fill: #3b4a54;
+    -fx-font-size: 13px;
+    -fx-padding: 7px 15px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+.metric-action-button:hover {
+    -fx-background-color: #e1e7ed;
+}
+
+/* Chart containers */
+.chart-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+    -fx-min-height: 300px;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.chart-placeholder {
+    -fx-background-color: #f5f7f9;
+    -fx-background-radius: 8px;
+    -fx-min-height: 250px;
+    -fx-alignment: center;
+}
+
+.placeholder-text {
+    -fx-text-fill: #b2b8be;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* Separator */
+.separator .line {
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0.5px;
+}
+
+/* Quick actions section */
+.quick-actions {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+    -fx-spacing: 15px;
+}
+
+/* Top navigation bar */
+.top-nav-bar {
+    -fx-background-color: #2c3e50;
+    -fx-padding: 10px 20px;
+    -fx-min-height: 50px;
+}
+
+.company-logo {
+    -fx-fill: white;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.company-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.nav-icon-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 5px 10px;
+}
+
+.nav-icon-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-icon {
+    -fx-fill: white;
+    -fx-opacity: 0.9;
+}
+
+.create-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+    -fx-background-radius: 4px;
+}
+
+.create-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.user-avatar {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50%;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-max-width: 36px;
+    -fx-max-height: 36px;
+    -fx-alignment: center;
+    -fx-padding: 0;
+}
+
+/* Breadcrumb bar */
+.breadcrumb-bar {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 5px 10px;
+}
+
+.back-button:hover {
+    -fx-text-fill: #2980b9;
+}
+
+.breadcrumb {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 14px;
+}
+
+/* Footer */
+.footer-bar {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 15px 20px;
+}
+
+.footer-text {
+    -fx-text-fill: #868e96;
+    -fx-font-size: 12px;
+}
+
+.footer-link {
+    -fx-text-fill: #3498db;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.footer-link:hover {
+    -fx-text-fill: #2980b9;
+    -fx-underline: true;
+}
+
+/* Content area */
+.content-scrollpane {
+    -fx-background-color: #f8f9fa;
+    -fx-background: #f8f9fa;
+    -fx-border-color: transparent;
+}
+
+.content-scrollpane > .viewport {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Responsive adjustments */
+.dashboard-container.compact .metric-card {
+    -fx-min-height: 100px;
+    -fx-padding: 10px;
+}
+
+.dashboard-container.compact .metric-title {
+    -fx-font-size: 12px;
+}
+
+.dashboard-container.compact .metric-value {
+    -fx-font-size: 24px;
+}
