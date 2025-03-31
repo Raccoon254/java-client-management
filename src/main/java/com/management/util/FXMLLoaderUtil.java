@@ -1,9 +1,14 @@
 package com.management.util;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -122,6 +127,7 @@ public class FXMLLoaderUtil {
      * @param <T> The type of the controller
      * @return true if loading was successful
      */
+
     public static <T> boolean loadIntoContainer(Pane container, String fxmlPath, Consumer<T> controllerConfig, String errorTitle) {
         try {
             FXMLLoader loader = getLoader(fxmlPath);
@@ -130,7 +136,49 @@ public class FXMLLoaderUtil {
             controllerConfig.accept(controller);
 
             container.getChildren().clear();
-            container.getChildren().add(root);
+
+            // If the container is a StackPane and has a ScrollPane child, use that for proper scrolling
+            if (container instanceof StackPane) {
+                StackPane stackPane = (StackPane) container;
+                ScrollPane scrollPane = null;
+
+                // First check if there's already a ScrollPane child
+                for (Node child : stackPane.getChildren()) {
+                    if (child instanceof ScrollPane) {
+                        scrollPane = (ScrollPane) child;
+                        break;
+                    }
+                }
+
+                // If no ScrollPane found, create one
+                if (scrollPane == null) {
+                    scrollPane = new ScrollPane();
+                    scrollPane.setFitToWidth(true);
+                    scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                    scrollPane.getStyleClass().add("content-scrollpane");
+                    stackPane.getChildren().add(scrollPane);
+                }
+
+                // Configure the content properly
+                VBox contentWrapper = new VBox(root);
+                contentWrapper.setFillWidth(true);
+
+                // This ensures the content takes all available width but can grow vertically
+                VBox.setVgrow(root, Priority.ALWAYS);
+
+                scrollPane.setContent(contentWrapper);
+
+                return true;
+            }
+
+            // Fallback if not a StackPane - wrap in ScrollPane
+            ScrollPane scrollPane = new ScrollPane(root);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            container.getChildren().add(scrollPane);
+
             return true;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to load view: " + fxmlPath, e);

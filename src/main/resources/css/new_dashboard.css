@@ -300,3 +300,34 @@
 .dashboard-container.compact .metric-value {
     -fx-font-size: 24px;
 }
+
+.content-scrollpane {
+    -fx-fit-to-height: false;
+    -fx-fit-to-width: true;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+.content-scrollpane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dashboard-scroll {
+    -fx-background-color: transparent;
+}
+
+.dashboard-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 2;
+}
+
+.dashboard-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #1d2957;
+    -fx-background-radius: 5em;
+}
+
+/* These ensure the content can grow vertically */
+.dashboard-container {
+    -fx-min-height: -1;
+    -fx-pref-height: -1;
+}

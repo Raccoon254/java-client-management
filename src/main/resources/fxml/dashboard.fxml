@@ -123,7 +123,7 @@
     <Separator />
 
     <!-- Charts row - top -->
-    <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+    <HBox spacing="15.0" minHeight="300.0" prefHeight="300.0">
         <!-- Recent Earnings Chart -->
         <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
             <Label styleClass="chart-title" text="Recent Earnings">
@@ -131,7 +131,8 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <AreaChart fx:id="earningsChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS">
+            <AreaChart fx:id="earningsChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS"
+                       minHeight="250.0" prefHeight="250.0">
                 <xAxis>
                     <CategoryAxis fx:id="earningsXAxis" label="Date" />
                 </xAxis>
@@ -148,12 +149,13 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <PieChart fx:id="statusChart" animated="false" labelLineLength="20" labelsVisible="true" legendSide="RIGHT" VBox.vgrow="ALWAYS" />
+            <PieChart fx:id="statusChart" animated="false" labelLineLength="20" labelsVisible="true"
+                      legendSide="RIGHT" VBox.vgrow="ALWAYS" minHeight="250.0" prefHeight="250.0" />
         </VBox>
     </HBox>
 
     <!-- Charts row - bottom -->
-    <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+    <HBox spacing="15.0" minHeight="300.0" prefHeight="300.0">
         <!-- Technician Performance Chart -->
         <VBox spacing="10.0" styleClass="chart-container" HBox.hgrow="ALWAYS">
             <Label styleClass="chart-title" text="Technician Performance">
@@ -161,7 +163,8 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <BarChart fx:id="technicianChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS">
+            <BarChart fx:id="technicianChart" animated="false" legendVisible="false" VBox.vgrow="ALWAYS"
+                      minHeight="250.0" prefHeight="250.0">
                 <xAxis>
                     <CategoryAxis fx:id="technicianXAxis" label="Technician" />
                 </xAxis>
@@ -178,7 +181,8 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <BarChart fx:id="monthlyTrendsChart" animated="false" legendVisible="true" VBox.vgrow="ALWAYS">
+            <BarChart fx:id="monthlyTrendsChart" animated="false" legendVisible="true" VBox.vgrow="ALWAYS"
+                      minHeight="250.0" prefHeight="250.0">
                 <xAxis>
                     <CategoryAxis fx:id="monthlyTrendsXAxis" label="Month" />
                 </xAxis>

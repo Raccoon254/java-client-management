@@ -14,6 +14,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -58,6 +59,9 @@ public class MainDashboardController implements DashboardController.DashboardNav
 
     @FXML
     private Label breadcrumbLabel;
+
+    @FXML
+    private ScrollPane contentScrollPane;
 
     // Services
     private CustomerService customerService;
@@ -109,6 +113,16 @@ public class MainDashboardController implements DashboardController.DashboardNav
 
         // Set this controller as the navigation callback for dashboard
         pageLoader.setNavigationCallback(this);
+
+        // Configure scrolling behavior for dashboard content
+        if (contentScrollPane != null) {
+            contentScrollPane.setFitToWidth(true);
+            contentScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            contentScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+            // Add style to make the scrollbar less obtrusive
+            contentScrollPane.getStyleClass().add("dashboard-scroll");
+        }
 
         // Set up navigation handlers
         if (createButton != null) {

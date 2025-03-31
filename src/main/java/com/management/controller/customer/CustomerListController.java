@@ -29,32 +29,27 @@ public class CustomerListController {
     @FXML
     private TableView<Customer> customerTable;
 
+    // Updated columns to match the new design
     @FXML
-    private TableColumn<Customer, String> customerNumberColumn;
+    private TableColumn<Customer, String> customerNameColumn;
 
     @FXML
-    private TableColumn<Customer, String> firstNameColumn;
+    private TableColumn<Customer, String> contactPersonColumn;
 
     @FXML
-    private TableColumn<Customer, String> lastNameColumn;
+    private TableColumn<Customer, String> positionColumn;
 
     @FXML
-    private TableColumn<Customer, String> emailColumn;
+    private TableColumn<Customer, String> contactNumberColumn;
 
     @FXML
-    private TableColumn<Customer, String> phoneColumn;
+    private TableColumn<Customer, String> lastBookingColumn;
 
     @FXML
-    private TableColumn<Customer, String> companyColumn;
-
-    @FXML
-    private TableColumn<Customer, String> stateColumn;
+    private TableColumn<Customer, String> bookingsCountColumn;
 
     @FXML
     private TextField searchField;
-
-    @FXML
-    private ComboBox<String> filterStateBox;
 
     @FXML
     private Button addButton;
@@ -66,15 +61,13 @@ public class CustomerListController {
     private Button deleteButton;
 
     @FXML
-    private Button refreshButton;
-
-    @FXML
     private Button exportButton;
 
     @FXML
     private Label statusLabel;
 
     private CustomerService customerService;
+    private ServiceRequestService serviceRequestService;
     private ObservableList<Customer> customerList = FXCollections.observableArrayList();
     private FilteredList<Customer> filteredCustomers;
 
@@ -83,14 +76,26 @@ public class CustomerListController {
      */
     @FXML
     public void initialize() {
-        // Initialize table columns
-        customerNumberColumn.setCellValueFactory(new PropertyValueFactory<>("customerNumber"));
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        // Initialize table columns to match the new design
+        customerNameColumn.setCellValueFactory(cellData -> {
+            Customer customer = cellData.getValue();
+            String companyName = customer.getCompanyName();
+            if (companyName != null && !companyName.isEmpty()) {
+                return new SimpleStringProperty(companyName);
+            } else {
+                return new SimpleStringProperty(customer.getFirstName() + " " + customer.getLastName());
+            }
+        });
 
-        // Phone column with custom formatter
-        phoneColumn.setCellValueFactory(cellData -> {
+        contactPersonColumn.setCellValueFactory(cellData -> {
+            Customer customer = cellData.getValue();
+            return new SimpleStringProperty(customer.getFirstName() + " " + customer.getLastName());
+        });
+
+        // Position might need to be added to your Customer model
+        positionColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
+
+        contactNumberColumn.setCellValueFactory(cellData -> {
             String phone = cellData.getValue().getPhoneNumber();
             if (phone == null || phone.isEmpty()) {
                 phone = cellData.getValue().getMobileNumber();
@@ -98,23 +103,16 @@ public class CustomerListController {
             return new SimpleStringProperty(phone != null ? phone : "");
         });
 
-        companyColumn.setCellValueFactory(new PropertyValueFactory<>("companyName"));
-        stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
+        // These might need to be added to your Customer model or retrieved from service requests
+        lastBookingColumn.setCellValueFactory(new PropertyValueFactory<>("lastBookingDate"));
+        bookingsCountColumn.setCellValueFactory(new PropertyValueFactory<>("bookingsCount"));
 
         // Set up the search and filter functionality
         filteredCustomers = new FilteredList<>(customerList, p -> true);
 
         // Configure search field listener
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredCustomers.setPredicate(createPredicate(newValue, filterStateBox.getValue()));
-            updateStatusLabel();
-        });
-
-        // Configure combobox for state filtering
-        filterStateBox.getItems().add("All States");
-        filterStateBox.setValue("All States");
-        filterStateBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            filteredCustomers.setPredicate(createPredicate(searchField.getText(), newVal));
+            filteredCustomers.setPredicate(createSearchPredicate(newValue));
             updateStatusLabel();
         });
 
@@ -149,57 +147,56 @@ public class CustomerListController {
         addButton.setOnAction(e -> handleAddCustomer());
         editButton.setOnAction(e -> handleEditCustomer());
         deleteButton.setOnAction(e -> handleDeleteCustomer());
-        refreshButton.setOnAction(e -> refreshCustomerList());
         exportButton.setOnAction(e -> handleExportCustomers());
     }
 
     /**
+     * Create a predicate for filtering customers based on search text
+     */
+    private Predicate<Customer> createSearchPredicate(String searchText) {
+        return customer -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+
+            String lowerCaseSearch = searchText.toLowerCase();
+
+            // Search in company name
+            if (customer.getCompanyName() != null &&
+                    customer.getCompanyName().toLowerCase().contains(lowerCaseSearch)) {
+                return true;
+            }
+
+            // Search in customer name
+            if (customer.getFirstName().toLowerCase().contains(lowerCaseSearch) ||
+                    customer.getLastName().toLowerCase().contains(lowerCaseSearch)) {
+                return true;
+            }
+
+            // Search in contact details
+            if ((customer.getEmail() != null && customer.getEmail().toLowerCase().contains(lowerCaseSearch)) ||
+                    (customer.getPhoneNumber() != null && customer.getPhoneNumber().contains(searchText)) ||
+                    (customer.getMobileNumber() != null && customer.getMobileNumber().contains(searchText))) {
+                return true;
+            }
+
+            return false;
+        };
+    }
+
+    /**
      * Set the customer service
-     * @param customerService The customer service to use
      */
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
         loadCustomers();
-        loadStateFilters();
     }
 
     /**
-     * Create a predicate for filtering customers based on search text and state
-     * @param searchText The search text
-     * @param state The selected state
-     * @return A predicate for filtering customers
+     * Set the service request service
      */
-    private Predicate<Customer> createPredicate(String searchText, String state) {
-        return customer -> {
-            // If search text is empty and state is "All States", show all customers
-            if ((searchText == null || searchText.isEmpty()) &&
-                    (state == null || state.equals("All States"))) {
-                return true;
-            }
-
-            boolean matchesSearch = true;
-            boolean matchesState = true;
-
-            // Apply search filter if searchText is not empty
-            if (searchText != null && !searchText.isEmpty()) {
-                String lowerCaseSearch = searchText.toLowerCase();
-
-                matchesSearch = (customer.getFirstName().toLowerCase().contains(lowerCaseSearch) ||
-                        customer.getLastName().toLowerCase().contains(lowerCaseSearch) ||
-                        (customer.getEmail() != null && customer.getEmail().toLowerCase().contains(lowerCaseSearch)) ||
-                        (customer.getPhoneNumber() != null && customer.getPhoneNumber().contains(searchText)) ||
-                        (customer.getMobileNumber() != null && customer.getMobileNumber().contains(searchText)) ||
-                        (customer.getCompanyName() != null && customer.getCompanyName().toLowerCase().contains(lowerCaseSearch)) ||
-                        (customer.getCustomerNumber() != null && customer.getCustomerNumber().toLowerCase().contains(lowerCaseSearch)));
-            }
-
-            // Apply state filter if state is not "All States"
-            if (state != null && !state.equals("All States")) {
-                matchesState = (customer.getState() != null && customer.getState().equals(state));
-            }
-
-            return matchesSearch && matchesState;
-        };
+    public void setServiceRequestService(ServiceRequestService serviceRequestService) {
+        this.serviceRequestService = serviceRequestService;
     }
 
     /**
@@ -227,41 +224,6 @@ public class CustomerListController {
     }
 
     /**
-     * Load state filter options
-     */
-    private void loadStateFilters() {
-        try {
-            // Get all unique states
-            List<Customer> allCustomers = customerService.getAllCustomers();
-
-            // Remember the current selection
-            String currentSelection = filterStateBox.getValue();
-
-            // Clear and add default "All States" option
-            filterStateBox.getItems().clear();
-            filterStateBox.getItems().add("All States");
-
-            // Add unique states
-            allCustomers.stream()
-                    .map(Customer::getState)
-                    .filter(state -> state != null && !state.isEmpty())
-                    .distinct()
-                    .sorted()
-                    .forEach(filterStateBox.getItems()::add);
-
-            // Restore selection or set to "All States"
-            if (currentSelection != null && filterStateBox.getItems().contains(currentSelection)) {
-                filterStateBox.setValue(currentSelection);
-            } else {
-                filterStateBox.setValue("All States");
-            }
-        } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error", "Failed to load state filters: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Update the status label with current filter results
      */
     private void updateStatusLabel() {
@@ -278,9 +240,8 @@ public class CustomerListController {
     /**
      * Refresh the customer list
      */
-    private void refreshCustomerList() {
+    public void refreshCustomerList() {
         loadCustomers();
-        loadStateFilters();
     }
 
     /**
@@ -399,29 +360,5 @@ public class CustomerListController {
             AlertUtils.showErrorAlert("Export Error", "Failed to export customers: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Handle view customer details
-     */
-    private void handleViewCustomerDetails() {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            return;
-        }
-
-        FXMLLoaderUtil.openDialog(
-                "/fxml/customer/customer_details.fxml",
-                "Customer Details",
-                mainPane.getScene().getWindow(),
-                (CustomerDetailsController controller) -> {
-                    controller.setCustomerService(customerService);
-                    controller.loadCustomerDetails(selectedCustomer.getCustomerId());
-                }
-        );
-    }
-
-    public void setServiceRequestService(ServiceRequestService serviceRequestService) {
-        //TODO
     }
 }

@@ -1,0 +1,105 @@
+/* Customer List Specific Styles */
+.customer-container {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20px;
+}
+
+/* Search field styling */
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 8px 15px;
+    -fx-prompt-text-fill: #888888;
+    -fx-min-height: 40px;
+    -fx-min-width: 240px;
+}
+
+.search-field:focused {
+    -fx-border-color: #7a7fba;
+    -fx-border-width: 1px;
+}
+
+/* Add New Button */
+.add-new-button {
+    -fx-background-color: #6c63ff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-min-height: 40px;
+}
+
+.add-new-button:hover {
+    -fx-background-color: #5a52e0;
+}
+
+.add-new-button .text {
+    -fx-fill: white;
+}
+
+/* Table styling */
+.customer-table {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 3);
+    -fx-padding: 0;
+}
+
+.customer-table .column-header {
+    -fx-background-color: #303f71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 15px 10px;
+}
+
+.customer-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+}
+
+.customer-table .column-header-background {
+    -fx-background-color: #303f71;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.customer-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f5f5f5 transparent;
+    -fx-padding: 5px 0;
+}
+
+.customer-table .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.customer-table .table-row-cell:hover {
+    -fx-background-color: #edf8ff;
+}
+
+.customer-table .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 12px 10px;
+    -fx-border-color: transparent;
+}
+
+/* Remove vertical grid lines */
+.customer-table .table-column {
+    -fx-border-width: 0;
+}
+
+/* Remove table header line */
+.customer-table .column-header-background .filler {
+    -fx-background-color: #303f71;
+}
+
+/* Action buttons container */
+.action-buttons {
+    -fx-spacing: 10px;
+    -fx-alignment: center-right;
+    -fx-padding: 20px 0 0 0;
+}

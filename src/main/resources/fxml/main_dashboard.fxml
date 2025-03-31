@@ -74,10 +74,12 @@
         </VBox>
     </top>
 
-    <!-- Main content area -->
+    <!-- Main content area with scrollable container -->
     <center>
         <StackPane fx:id="contentArea" BorderPane.alignment="CENTER">
-            <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scrollpane"/>
+            <ScrollPane fx:id="contentScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="content-scrollpane">
+                <!-- Content will be loaded here dynamically -->
+            </ScrollPane>
         </StackPane>
     </center>
 
