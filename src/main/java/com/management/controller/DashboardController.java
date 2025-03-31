@@ -16,7 +16,10 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import java.util.Objects;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +36,16 @@ public class DashboardController {
     @FXML private Label activeServiceRequestsLabel;
     @FXML private Label pendingPaymentsLabel;
     @FXML private PieChart statusChart;
+
+    // Icons
+    @FXML private ImageView clientsIcon;
+    @FXML private ImageView techniciansIcon;
+    @FXML private ImageView projectsIcon;
+    @FXML private ImageView invoicesIcon;
+    @FXML private ImageView tasksIcon;
+    @FXML private ImageView hoursIcon;
+    @FXML private ImageView reportsIcon;
+    @FXML private ImageView settingsIcon;
 
     // Table elements - these may not exist in the new dashboard
     @FXML private TableView<ServiceRequest> upcomingServiceTable;
@@ -126,12 +139,190 @@ public class DashboardController {
 
     /**
      * Initialize the controller - this is automatically called by FXML loader
-     * but we don't do any service-dependent initialization here
      */
     @FXML
     public void initialize() {
-        // This method is intentionally empty
-        // Actual initialization happens in checkServiceInitialization after services are set
+        // Load icons
+        loadIcons();
+    }
+
+    /**
+     * Load all the icons
+     */
+    private void loadIcons() {
+        try {
+            // Load icons using Class.getResource to ensure proper classpath loading
+            if (clientsIcon != null) {
+                clientsIcon.setImage(loadImage("/images/icons/user-circle-svgrepo-com.png"));
+            }
+
+            if (techniciansIcon != null) {
+                techniciansIcon.setImage(loadImage("/images/icons/bolt-svgrepo-com.png"));
+            }
+
+            if (projectsIcon != null) {
+                projectsIcon.setImage(loadImage("/images/icons/routing-2-svgrepo-com.png"));
+            }
+
+            if (invoicesIcon != null) {
+                invoicesIcon.setImage(loadImage("/images/icons/transfer-vertical-svgrepo-com.png"));
+            }
+
+            if (tasksIcon != null) {
+                tasksIcon.setImage(loadImage("/images/icons/clock-circle-svgrepo-com.png"));
+            }
+
+            if (hoursIcon != null) {
+                hoursIcon.setImage(loadImage("/images/icons/alarm-add-svgrepo-com.png"));
+            }
+
+            if (reportsIcon != null) {
+                reportsIcon.setImage(loadImage("/images/icons/graph-new-up-svgrepo-com.png"));
+            }
+
+            if (settingsIcon != null) {
+                settingsIcon.setImage(loadImage("/images/icons/settings-minimalistic-svgrepo-com.png"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading icons: " + e.getMessage());
+            e.printStackTrace();
+
+            // If loading icons fails, we'll use SVG paths as fallback
+            setFallbackSVGIcons();
+        }
+    }
+
+    /**
+     * Load an image from the classpath
+     * @param path Path to the image within the classpath
+     * @return The Image object
+     */
+    private Image loadImage(String path) {
+        try {
+            System.out.println("Attempting to load image from: " + path);
+            var stream = getClass().getResourceAsStream(path);
+            if (stream == null) {
+                System.out.println("Stream is null for path: " + path);
+                return null;
+            }
+            return new Image(stream);
+        } catch (Exception e) {
+            System.err.println("Could not load image from path: " + path);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Set fallback SVG icons if image loading fails
+     */
+    private void setFallbackSVGIcons() {
+        try {
+            System.out.println("Using fallback SVG icons...");
+
+            // Replace ImageViews with SVG paths
+            if (clientsIcon != null && clientsIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) clientsIcon.getParent();
+                parent.getChildren().remove(clientsIcon);
+
+                // Create SVG path
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#3498db"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("clients-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (techniciansIcon != null && techniciansIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) techniciansIcon.getParent();
+                parent.getChildren().remove(techniciansIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#2ecc71"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("technicians-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (projectsIcon != null && projectsIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) projectsIcon.getParent();
+                parent.getChildren().remove(projectsIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#f39c12"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("projects-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            // Add similar code for other icons
+            if (invoicesIcon != null && invoicesIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) invoicesIcon.getParent();
+                parent.getChildren().remove(invoicesIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#e74c3c"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("invoices-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (tasksIcon != null && tasksIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) tasksIcon.getParent();
+                parent.getChildren().remove(tasksIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#9b59b6"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("tasks-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (hoursIcon != null && hoursIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) hoursIcon.getParent();
+                parent.getChildren().remove(hoursIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#34495e"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("hours-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (reportsIcon != null && reportsIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) reportsIcon.getParent();
+                parent.getChildren().remove(reportsIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#16a085"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("reports-icon");
+                parent.getChildren().add(0, path);
+            }
+
+            if (settingsIcon != null && settingsIcon.getParent() != null) {
+                javafx.scene.layout.Pane parent = (javafx.scene.layout.Pane) settingsIcon.getParent();
+                parent.getChildren().remove(settingsIcon);
+
+                javafx.scene.shape.SVGPath path = new javafx.scene.shape.SVGPath();
+                path.setContent("M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z");
+                path.setFill(javafx.scene.paint.Color.valueOf("#7f8c8d"));
+                path.getStyleClass().add("metric-icon");
+                path.getStyleClass().add("settings-icon");
+                parent.getChildren().add(0, path);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error setting fallback SVG icons: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
