@@ -87,14 +87,15 @@
     <!-- Second row of metrics -->
     <GridPane hgap="15.0" vgap="15.0">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="110.0" prefHeight="130.0" vgrow="SOMETIMES" />
         </rowConstraints>
-
         <!-- Hours Logged -->
         <VBox alignment="CENTER" styleClass="metric-card" GridPane.columnIndex="0">
             <ImageView fx:id="hoursIcon" fitWidth="40" fitHeight="40" pickOnBounds="true" preserveRatio="true"/>
