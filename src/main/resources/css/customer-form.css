@@ -73,6 +73,7 @@
 .error-label {
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
+    -fx-padding: 45px 0 0 0;
 }
 
 .required-label {

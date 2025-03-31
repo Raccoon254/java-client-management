@@ -6,6 +6,8 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -14,61 +16,68 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="900.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.service.ServiceRequestListController">
+<BorderPane fx:id="mainPane" prefHeight="600.0" prefWidth="900.0" stylesheets="@../../css/main.css,@../../css/service-list.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.service.ServiceRequestListController">
     <top>
         <VBox spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label styleClass="section-title" text="Service Request Management">
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+            </BorderPane.margin>
+            <Label styleClass="section-title" text="Service Request Management">
+                <font>
+                    <Font name="System Bold" size="18.0"/>
+                </font>
+            </Label>
+
+            <!-- Status Tabs -->
+            <TabPane fx:id="statusTabPane" tabClosingPolicy="UNAVAILABLE">
+                <Tab fx:id="allTab" text="All Bookings"/>
+                <Tab fx:id="pendingTab" text="Pending"/>
+                <Tab fx:id="confirmedTab" text="Confirmed"/>
+                <Tab fx:id="completedTab" text="Completed"/>
+                <Tab fx:id="cancelledTab" text="Cancelled"/>
+            </TabPane>
+
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <Label text="Start Date:">
                     <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font size="14.0"/>
                     </font>
                 </Label>
-                <HBox alignment="CENTER_LEFT" spacing="15.0">
-                    <children>
-                        <TextField fx:id="searchField" prefHeight="35.0" prefWidth="300.0" promptText="Search by description, customer, location...">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </TextField>
-                        <Label text="Status:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <ComboBox fx:id="statusFilterBox" prefHeight="35.0" prefWidth="150.0" />
-                    </children>
-                </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="15.0">
-                    <children>
-                        <Label text="Date Range:">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <DatePicker fx:id="startDatePicker" prefHeight="35.0" promptText="Start Date" />
-                        <Label text="-" />
-                        <DatePicker fx:id="endDatePicker" prefHeight="35.0" promptText="End Date" />
-                        <Button fx:id="applyDateFilterButton" mnemonicParsing="false" text="Apply" />
-                        <Button fx:id="resetFilterButton" mnemonicParsing="false" text="Reset Filters" />
-                        <Button fx:id="refreshButton" mnemonicParsing="false" styleClass="secondary-button" text="Refresh" />
-                    </children>
-                </HBox>
-                <Separator prefWidth="200.0" />
-            </children>
-            <BorderPane.margin>
-                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
-            </BorderPane.margin>
+                <DatePicker fx:id="startDatePicker" prefHeight="35.0" promptText="Start Date"/>
+                <Label text="End Date:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <DatePicker fx:id="endDatePicker" prefHeight="35.0" promptText="End Date"/>
+                <Button fx:id="applyDateFilterButton" mnemonicParsing="false" text="Apply"/>
+                <Button fx:id="resetFilterButton" mnemonicParsing="false" text="Reset Filters"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                    <TextField fx:id="searchField" prefHeight="35.0" prefWidth="300.0" promptText="Search...">
+                        <font>
+                            <Font size="14.0"/>
+                        </font>
+                    </TextField>
+                    <Button fx:id="refreshButton" mnemonicParsing="false" styleClass="secondary-button" text="Refresh"/>
+                </children>
+            </HBox>
+
+            <Separator prefWidth="200.0"/>
         </VBox>
     </top>
     <center>
         <TableView fx:id="serviceRequestTable" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn fx:id="dateColumn" prefWidth="100.0" text="Date" />
-                <TableColumn fx:id="customerColumn" prefWidth="150.0" text="Customer" />
-                <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Description" />
+                <TableColumn fx:id="technicianColumn" prefWidth="150.0" text="Technician" />
+                <TableColumn fx:id="requestNoColumn" prefWidth="120.0" text="Request No." />
+                <TableColumn fx:id="poReferenceColumn" prefWidth="150.0" text="PO Reference" />
+                <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Service Date" />
+                <TableColumn fx:id="startTimeColumn" prefWidth="100.0" text="Start Time" />
+                <TableColumn fx:id="endTimeColumn" prefWidth="100.0" text="End Time" />
                 <TableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
-                <TableColumn fx:id="locationColumn" prefWidth="150.0" text="Location" />
-                <TableColumn fx:id="costColumn" prefWidth="100.0" text="Cost" />
             </columns>
             <BorderPane.margin>
                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -80,24 +89,21 @@
     </center>
     <bottom>
         <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label fx:id="statusLabel" text="0 service requests">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <HBox alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Button fx:id="exportButton" mnemonicParsing="false" text="Export to CSV" />
-                        <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="cancel-button" text="Delete" />
-                        <Button fx:id="editButton" mnemonicParsing="false" text="Edit" />
-                        <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" text="New Service Request" />
-                    </children>
-                </HBox>
-            </children>
             <BorderPane.margin>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
             </BorderPane.margin>
+            <Label fx:id="statusLabel" text="0 service requests">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
+                <Button fx:id="exportButton" mnemonicParsing="false" text="Export to CSV"/>
+                <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="cancel-button" text="Delete"/>
+                <Button fx:id="viewDetailsButton" mnemonicParsing="false" text="View Details"/>
+                <Button fx:id="editButton" mnemonicParsing="false" text="Edit"/>
+                <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" text="New Service Request"/>
+            </HBox>
         </HBox>
     </bottom>
 </BorderPane>

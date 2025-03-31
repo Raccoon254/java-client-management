@@ -32,4 +32,6 @@ public interface ServiceRequestDAO {
     // Utility
     int count();
     double calculateTotalCost(int jobId);
+
+    List<Technician> getTechniciansForServiceRequest(int jobId);
 }

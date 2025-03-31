@@ -1,26 +1,16 @@
 package com.management.controller.service;
 
-import com.management.controller.customer.CustomerDetailsController;
 import com.management.model.ServiceRequest;
-import com.management.model.Technician;
 import com.management.service.ServiceRequestService;
-import com.management.service.TechnicianService;
 import com.management.util.AlertUtils;
-import com.management.util.CSVExporter;
-import com.management.util.FXMLLoaderUtil;
-import com.management.util.PDFGenerator;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,138 +19,80 @@ import java.util.Optional;
 public class ServiceRequestDetailsController {
 
     @FXML
-    private Label jobIdLabel;
+    private BorderPane mainPane;
 
     @FXML
-    private Label customerNameLabel;
+    private Label requestNumberLabel;
 
     @FXML
-    private Label customerNumberLabel;
+    private HBox summaryCard;
 
     @FXML
-    private Label dateLabel;
+    private Label technicianLabel;
 
     @FXML
-    private Label timeLabel;
+    private Label poReferenceLabel;
+
+    @FXML
+    private Label serviceDateLabel;
+
+    @FXML
+    private Label serviceTimeLabel;
 
     @FXML
     private Label statusLabel;
 
     @FXML
-    private Label descriptionLabel;
+    private Label postRefLabel;
 
     @FXML
-    private Label buildingNameLabel;
+    private Label contactPersonLabel;
+
+    @FXML
+    private Label teamLabel;
+
+    @FXML
+    private Label participantLabel;
+
+    @FXML
+    private Label phoneLabel;
+
+    @FXML
+    private Label businessLabel;
 
     @FXML
     private Label addressLabel;
 
     @FXML
-    private Label cityStateZipLabel;
-
-    @FXML
-    private Label pocNameLabel;
-
-    @FXML
-    private Label pocPhoneLabel;
-
-    @FXML
-    private Label serviceCostLabel;
-
-    @FXML
-    private Label addedCostLabel;
-
-    @FXML
-    private Label parkingFeesLabel;
-
-    @FXML
-    private Label totalCostLabel;
-
-    @FXML
     private Label notesLabel;
 
     @FXML
-    private Label createdAtLabel;
-
-    @FXML
-    private TableView<Technician> technicianTable;
-
-    @FXML
-    private TableColumn<Technician, String> techNameColumn;
-
-    @FXML
-    private TableColumn<Technician, String> techPhoneColumn;
-
-    @FXML
-    private TableColumn<Technician, String> techEmailColumn;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Button viewCustomerButton;
-
-    @FXML
-    private Button assignTechnicianButton;
-
-    @FXML
-    private Button removeTechnicianButton;
-
-    @FXML
-    private Button printButton;
+    private Button copyBookingButton;
 
     @FXML
     private Button closeButton;
 
     private ServiceRequestService serviceRequestService;
-    private TechnicianService technicianService;
-    private ServiceRequest serviceRequest;
-    private ObservableList<Technician> technicians = FXCollections.observableArrayList();
+    private int serviceRequestId;
 
     /**
      * Initialize the controller
      */
     @FXML
     public void initialize() {
-        // Set up table columns for technicians
-        techNameColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getFirstName() + " " + cellData.getValue().getLastName()));
+        // Set up close button action
+        closeButton.setOnAction(e -> closeWindow());
 
-        techPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        techEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        // Set up button handlers
-        editButton.setOnAction(e -> handleEditServiceRequest());
-        deleteButton.setOnAction(e -> handleDeleteServiceRequest());
-        viewCustomerButton.setOnAction(e -> handleViewCustomer());
-        assignTechnicianButton.setOnAction(e -> handleAssignTechnician());
-        removeTechnicianButton.setOnAction(e -> handleRemoveTechnician());
-        printButton.setOnAction(e -> handlePrintServiceRequest());
-        closeButton.setOnAction(e -> handleClose());
-
-        // Enable/disable remove technician button based on selection
-        technicianTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            removeTechnicianButton.setDisable(newSelection == null);
-        });
+        // Set up copy booking button action
+        copyBookingButton.setOnAction(e -> handleCopyBooking());
     }
 
     /**
      * Set the service request service
-     * @param serviceRequestService The service request service to use
+     * @param serviceRequestService The service to use
      */
     public void setServiceRequestService(ServiceRequestService serviceRequestService) {
         this.serviceRequestService = serviceRequestService;
-    }
-
-    /**
-     * Set the technician service
-     * @param technicianService The technician service to use
-     */
-    public void setTechnicianService(TechnicianService technicianService) {
-        this.technicianService = technicianService;
     }
 
     /**
@@ -168,277 +100,172 @@ public class ServiceRequestDetailsController {
      * @param jobId The job ID to load
      */
     public void loadServiceRequestDetails(int jobId) {
+        this.serviceRequestId = jobId;
+
         try {
-            // Load service request
             Optional<ServiceRequest> serviceRequestOpt = serviceRequestService.findById(jobId);
-            if (serviceRequestOpt.isEmpty()) {
-                AlertUtils.showErrorAlert("Error", "Service request not found.");
-                handleClose();
-                return;
-            }
 
-            this.serviceRequest = serviceRequestOpt.get();
-
-            // Display service request information
-            jobIdLabel.setText(String.valueOf(serviceRequest.getJobId()));
-
-            if (serviceRequest.getCustomer() != null) {
-                customerNameLabel.setText(serviceRequest.getCustomer().getFirstName() + " " +
-                        serviceRequest.getCustomer().getLastName());
-                customerNumberLabel.setText(serviceRequest.getCustomer().getCustomerNumber());
+            if (serviceRequestOpt.isPresent()) {
+                ServiceRequest serviceRequest = serviceRequestOpt.get();
+                populateDetails(serviceRequest);
             } else {
-                customerNameLabel.setText("N/A");
-                customerNumberLabel.setText("N/A");
+                AlertUtils.showErrorAlert("Error", "Service request not found");
+                closeWindow();
             }
-
-            dateLabel.setText(serviceRequest.getServiceDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-
-            if (serviceRequest.getStartTime() != null && serviceRequest.getEndTime() != null) {
-                timeLabel.setText(serviceRequest.getStartTime().toString() + " - " + serviceRequest.getEndTime().toString());
-            } else if (serviceRequest.getStartTime() != null) {
-                timeLabel.setText(serviceRequest.getStartTime().toString() + " - N/A");
-            } else {
-                timeLabel.setText("N/A");
-            }
-
-            statusLabel.setText(serviceRequest.getStatus() != null ? serviceRequest.getStatus() : "N/A");
-            descriptionLabel.setText(serviceRequest.getDescription() != null ? serviceRequest.getDescription() : "N/A");
-            buildingNameLabel.setText(serviceRequest.getBuildingName() != null ? serviceRequest.getBuildingName() : "N/A");
-
-            // Set address
-            addressLabel.setText(serviceRequest.getServiceAddress() != null ? serviceRequest.getServiceAddress() : "N/A");
-
-            // Set city, state, zip
-            StringBuilder cityStateZip = new StringBuilder();
-            if (serviceRequest.getServiceCity() != null && !serviceRequest.getServiceCity().isEmpty()) {
-                cityStateZip.append(serviceRequest.getServiceCity());
-
-                if (serviceRequest.getServiceState() != null && !serviceRequest.getServiceState().isEmpty()) {
-                    cityStateZip.append(", ").append(serviceRequest.getServiceState());
-                }
-
-                if (serviceRequest.getServiceZip() != null && !serviceRequest.getServiceZip().isEmpty()) {
-                    cityStateZip.append(" ").append(serviceRequest.getServiceZip());
-                }
-            } else if (serviceRequest.getServiceState() != null || serviceRequest.getServiceZip() != null) {
-                if (serviceRequest.getServiceState() != null) {
-                    cityStateZip.append(serviceRequest.getServiceState());
-                }
-
-                if (serviceRequest.getServiceZip() != null) {
-                    if (cityStateZip.length() > 0) {
-                        cityStateZip.append(" ");
-                    }
-                    cityStateZip.append(serviceRequest.getServiceZip());
-                }
-            } else {
-                cityStateZip.append("N/A");
-            }
-            cityStateZipLabel.setText(cityStateZip.toString());
-
-            pocNameLabel.setText(serviceRequest.getPocName() != null ? serviceRequest.getPocName() : "N/A");
-            pocPhoneLabel.setText(serviceRequest.getPocPhone() != null ? serviceRequest.getPocPhone() : "N/A");
-
-            // Set costs
-            serviceCostLabel.setText(String.format("$%.2f", serviceRequest.getServiceCost()));
-            addedCostLabel.setText(String.format("$%.2f", serviceRequest.getAddedCost()));
-            parkingFeesLabel.setText(String.format("$%.2f", serviceRequest.getParkingFees()));
-            totalCostLabel.setText(String.format("$%.2f", serviceRequest.getTotalCost()));
-
-            // Set notes
-            notesLabel.setText(serviceRequest.getServiceNotes() != null ? serviceRequest.getServiceNotes() : "N/A");
-
-            if (serviceRequest.getCreatedAt() != null) {
-                createdAtLabel.setText(serviceRequest.getCreatedAt()
-                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")));
-            } else {
-                createdAtLabel.setText("N/A");
-            }
-
-            // Load technicians for this service request
-            loadTechnicians();
-
         } catch (Exception e) {
             AlertUtils.showErrorAlert("Error", "Failed to load service request details: " + e.getMessage());
             e.printStackTrace();
+            closeWindow();
         }
     }
 
     /**
-     * Load technicians assigned to this service request
+     * Populate the UI with service request details
+     * @param serviceRequest The service request data
      */
-    private void loadTechnicians() {
+    private void populateDetails(ServiceRequest serviceRequest) {
+        // Set request number
+        requestNumberLabel.setText("#" + serviceRequest.getJobId());
+
+        // Set technician info
+        if (serviceRequest.getTechnicians() != null && !serviceRequest.getTechnicians().isEmpty()) {
+            technicianLabel.setText(serviceRequest.getTechnicians().get(0).getFullName());
+        } else {
+            technicianLabel.setText("Unassigned");
+        }
+
+        // Set PO reference
+        poReferenceLabel.setText(serviceRequest.getRefNo() != null ? serviceRequest.getRefNo() : "");
+
+        // Set date and time
+        serviceDateLabel.setText(serviceRequest.getServiceDate().format(
+                DateTimeFormatter.ofPattern("EEE, MM/dd/yyyy")));
+
+        if (serviceRequest.getStartTime() != null && serviceRequest.getEndTime() != null) {
+            serviceTimeLabel.setText(serviceRequest.getStartTime().format(
+                    DateTimeFormatter.ofPattern("h:mm a")) + " - " +
+                    serviceRequest.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a")));
+        } else {
+            serviceTimeLabel.setText("");
+        }
+
+        // Set status with appropriate styling
+        statusLabel.setText(serviceRequest.getStatus());
+        statusLabel.getStyleClass().removeAll("status-badge-pending", "status-badge-confirmed",
+                "status-badge-completed", "status-badge-cancelled");
+
+        switch (serviceRequest.getStatus()) {
+            case "Pending":
+                statusLabel.getStyleClass().add("status-badge-pending");
+                break;
+            case "Confirmed":
+                statusLabel.getStyleClass().add("status-badge-confirmed");
+                break;
+            case "Completed":
+                statusLabel.getStyleClass().add("status-badge-completed");
+                break;
+            case "Cancelled":
+                statusLabel.getStyleClass().add("status-badge-cancelled");
+                break;
+        }
+
+        // Set summary card background based on status
+        summaryCard.getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+        switch (serviceRequest.getStatus()) {
+            case "Pending":
+                summaryCard.getStyleClass().add("status-pending");
+                break;
+            case "Confirmed":
+                summaryCard.getStyleClass().add("status-confirmed");
+                break;
+            case "Completed":
+                summaryCard.getStyleClass().add("status-completed");
+                break;
+            case "Cancelled":
+                summaryCard.getStyleClass().add("status-cancelled");
+                break;
+        }
+
+        // Set additional details
+        postRefLabel.setText(serviceRequest.getPostrefNumber() != null ? serviceRequest.getPostrefNumber() : "");
+        contactPersonLabel.setText(serviceRequest.getPocName() != null ? serviceRequest.getPocName() : "");
+
+        // Set team (not in model, using placeholder)
+        teamLabel.setText("Team A");
+
+        // Set participant
+        participantLabel.setText(serviceRequest.getServiceParticipantName() != null ?
+                serviceRequest.getServiceParticipantName() : "");
+
+        // Set phone
+        phoneLabel.setText(serviceRequest.getPocPhone() != null ? serviceRequest.getPocPhone() : "");
+
+        // Set business (from customer)
+        if (serviceRequest.getCustomer() != null) {
+            businessLabel.setText(serviceRequest.getCustomer().getCompanyName() != null ?
+                    serviceRequest.getCustomer().getCompanyName() : "");
+        } else {
+            businessLabel.setText("");
+        }
+
+        // Set address
+        addressLabel.setText(serviceRequest.getServiceLocation());
+
+        // Set notes
+        notesLabel.setText(serviceRequest.getServiceNotes() != null ? serviceRequest.getServiceNotes() : "");
+    }
+
+    /**
+     * Handle copy booking action
+     */
+    private void handleCopyBooking() {
         try {
-            List<Technician> assignedTechnicians = serviceRequest.getTechnicians();
+            Optional<ServiceRequest> serviceRequestOpt = serviceRequestService.findById(serviceRequestId);
 
-            technicians.clear();
-            if (assignedTechnicians != null) {
-                technicians.addAll(assignedTechnicians);
+            if (serviceRequestOpt.isPresent()) {
+                ServiceRequest original = serviceRequestOpt.get();
+
+                // Create a new service request based on the current one
+                ServiceRequest copy = new ServiceRequest();
+                copy.setDescription(original.getDescription());
+                copy.setCustomerId(original.getCustomerId());
+                copy.setServiceDate(original.getServiceDate().plusDays(1)); // Schedule for next day
+                copy.setStartTime(original.getStartTime());
+                copy.setEndTime(original.getEndTime());
+                copy.setBuildingName(original.getBuildingName());
+                copy.setServiceAddress(original.getServiceAddress());
+                copy.setServiceCity(original.getServiceCity());
+                copy.setServiceState(original.getServiceState());
+                copy.setServiceZip(original.getServiceZip());
+                copy.setPocName(original.getPocName());
+                copy.setPocPhone(original.getPocPhone());
+                copy.setServiceParticipantName(original.getServiceParticipantName());
+                copy.setServiceNotes(original.getServiceNotes());
+                copy.setServiceCost(original.getServiceCost());
+                copy.setStatus("Pending"); // New copy should be pending
+
+                int newId = serviceRequestService.createServiceRequest(copy);
+
+                if (newId > 0) {
+                    AlertUtils.showInformationAlert(
+                            "Successfully created a copy of service request #" + original.getJobId(),
+                            "New service request ID: #" + newId);
+                    closeWindow();
+                } else {
+                    AlertUtils.showErrorAlert("Error", "Failed to create copy of service request");
+                }
             }
-
-            technicianTable.setItems(technicians);
-
-            // Disable remove button if no technicians are selected
-            removeTechnicianButton.setDisable(technicianTable.getSelectionModel().getSelectedItem() == null);
         } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error", "Failed to load technicians: " + e.getMessage());
+            AlertUtils.showErrorAlert("Error", "Failed to copy service request: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     /**
-     * Handle editing the service request
+     * Close the window
      */
-    private void handleEditServiceRequest() {
-        FXMLLoaderUtil.openDialog(
-                "/fxml/service/service_request_form.fxml",
-                "Edit Service Request",
-                jobIdLabel.getScene().getWindow(),
-                (ServiceRequestFormController controller) -> {
-                    controller.setServiceRequestService(serviceRequestService);
-                    controller.setMode(ServiceRequestFormController.Mode.EDIT);
-                    controller.loadServiceRequest(serviceRequest);
-                }
-        );
-
-        // Reload service request details after edit
-        loadServiceRequestDetails(serviceRequest.getJobId());
-    }
-
-    /**
-     * Handle deleting the service request
-     */
-    private void handleDeleteServiceRequest() {
-        boolean confirmed = AlertUtils.showConfirmationAlert(
-                "Delete Service Request",
-                "Are you sure you want to delete this service request?",
-                "This will permanently delete service request #" + serviceRequest.getJobId() +
-                        " for " + serviceRequest.getDescription() + ".\n\n" +
-                        "This action cannot be undone."
-        );
-
-        if (confirmed) {
-            try {
-                boolean success = serviceRequestService.deleteServiceRequest(serviceRequest.getJobId());
-
-                if (success) {
-                    AlertUtils.showInformationAlert("Success", "Service request deleted successfully.");
-                    handleClose();
-                } else {
-                    AlertUtils.showErrorAlert("Error", "Failed to delete service request.");
-                }
-            } catch (Exception e) {
-                AlertUtils.showErrorAlert("Error", "Failed to delete service request: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Handle viewing the customer
-     */
-    private void handleViewCustomer() {
-        if (serviceRequest.getCustomer() == null) {
-            AlertUtils.showWarningAlert("Warning", "No customer information available.");
-            return;
-        }
-
-        FXMLLoaderUtil.openDialog(
-                "/fxml/customer/customer_details.fxml",
-                "Customer Details",
-                jobIdLabel.getScene().getWindow(),
-                (CustomerDetailsController controller) -> {
-                    // You would need to inject the customer service here
-                    controller.loadCustomerDetails(serviceRequest.getCustomerId());
-                }
-        );
-    }
-
-    /**
-     * Handle assigning a technician to the service request
-     */
-    private void handleAssignTechnician() {
-        // This would typically open a dialog to select a technician
-        // For now, we'll just show a placeholder alert
-        AlertUtils.showInformationAlert(
-                "Assign Technician",
-                "This would open a dialog to assign a technician."
-        );
-
-        // In a real implementation, you would:
-        // 1. Open a dialog showing available technicians
-        // 2. Let the user select one
-        // 3. Call serviceRequestService.assignTechnician(...)
-        // 4. Refresh the technician list
-    }
-
-    /**
-     * Handle removing a technician from the service request
-     */
-    private void handleRemoveTechnician() {
-        Technician selectedTechnician = technicianTable.getSelectionModel().getSelectedItem();
-        if (selectedTechnician == null) {
-            return;
-        }
-
-        boolean confirmed = AlertUtils.showConfirmationAlert(
-                "Remove Technician",
-                "Are you sure you want to remove this technician from the service request?",
-                "This will remove " + selectedTechnician.getFirstName() + " " + selectedTechnician.getLastName() +
-                        " from service request #" + serviceRequest.getJobId() + "."
-        );
-
-        if (confirmed) {
-            try {
-                boolean success = serviceRequestService.removeTechnician(
-                        serviceRequest.getJobId(), selectedTechnician.getTechnicianId());
-
-                if (success) {
-                    AlertUtils.showInformationAlert("Success", "Technician removed successfully.");
-                    loadTechnicians(); // Refresh the technician list
-                } else {
-                    AlertUtils.showErrorAlert("Error", "Failed to remove technician.");
-                }
-            } catch (Exception e) {
-                AlertUtils.showErrorAlert("Error", "Failed to remove technician: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Handle printing service request details to PDF
-     */
-    private void handlePrintServiceRequest() {
-        try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Service Request Report");
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
-            );
-            fileChooser.setInitialFileName("service_request_" + serviceRequest.getJobId() + ".pdf");
-
-            File file = fileChooser.showSaveDialog(jobIdLabel.getScene().getWindow());
-
-            if (file != null) {
-                PDFGenerator.generateServiceRequestReport(serviceRequest, file.getAbsolutePath());
-
-                AlertUtils.showInformationAlert(
-                        "Report Generated",
-                        "Service request report has been saved to " + file.getName()
-                );
-            }
-        } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error", "Failed to generate report: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Handle closing the dialog
-     */
-    private void handleClose() {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
+    private void closeWindow() {
+        Stage stage = (Stage) mainPane.getScene().getWindow();
         stage.close();
     }
 }

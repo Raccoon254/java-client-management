@@ -1,0 +1,214 @@
+/* Technician List Specific Styles */
+
+.technician-container {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 0;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    -fx-padding: 0 20px;
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.nav-tabs .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8e9fad;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-cursor: hand;
+    -fx-padding: 15px 20px;
+}
+
+.nav-tabs .button:hover {
+    -fx-text-fill: #6c63ff;
+}
+
+.nav-tabs .button.active {
+    -fx-text-fill: #6c63ff;
+    -fx-border-color: transparent transparent #6c63ff transparent;
+}
+
+/* Search field styling */
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-border-color: #e0e0e0;
+    -fx-padding: 8px 15px 8px 35px;
+    -fx-prompt-text-fill: #888888;
+    -fx-min-height: 38px;
+    -fx-min-width: 240px;
+}
+
+.search-field:focused {
+    -fx-border-color: #7a7fba;
+    -fx-border-width: 1px;
+}
+
+/* Summary cards */
+.summary-cards {
+    -fx-spacing: 15px;
+    -fx-padding: 20px;
+}
+
+.summary-card {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 3);
+    -fx-min-width: 150px;
+    -fx-alignment: center;
+}
+
+.status-label {
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 4px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.status-label-unpaid {
+    -fx-background-color: #e74c3c;
+}
+
+.status-label-paid {
+    -fx-background-color: #2ecc71;
+}
+
+.status-label-available {
+    -fx-background-color: #2ecc71;
+}
+
+.status-label-assigned {
+    -fx-background-color: #f39c12;
+}
+
+.status-amount {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 0;
+}
+
+/* Table styling */
+.technician-table {
+    -fx-background-color: white;
+    -fx-background-radius: 0px;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.technician-table .column-header {
+    -fx-background-color: #303f71;
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+    -fx-padding: 15px 10px;
+}
+
+.technician-table .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+}
+
+.technician-table .column-header-background {
+    -fx-background-color: #303f71;
+}
+
+.technician-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f1f1 transparent;
+    -fx-padding: 5px 0;
+}
+
+.technician-table .table-row-cell:odd {
+    -fx-background-color: #fbfbfb;
+}
+
+.technician-table .table-row-cell:hover {
+    -fx-background-color: #edf8ff;
+}
+
+.technician-table .table-row-cell:selected {
+    -fx-background-color: #e8f4ff;
+}
+
+.technician-table .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 12px 10px;
+    -fx-border-color: transparent;
+}
+
+/* Status cells in table */
+.status-cell {
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 4px;
+    -fx-alignment: center;
+}
+
+.status-cell-unpaid {
+    -fx-text-fill: white;
+    -fx-background-color: #e74c3c;
+}
+
+.status-cell-paid {
+    -fx-text-fill: white;
+    -fx-background-color: #2ecc71;
+}
+
+.status-cell-available {
+    -fx-text-fill: white;
+    -fx-background-color: #2ecc71;
+}
+
+.status-cell-assigned {
+    -fx-text-fill: white;
+    -fx-background-color: #f39c12;
+}
+
+/* Action buttons */
+.process-payment-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.process-payment-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.add-button {
+    -fx-background-color: #6c63ff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-min-height: 40px;
+}
+
+.add-button:hover {
+    -fx-background-color: #5a52e0;
+}
+
+/* Action buttons container */
+.action-buttons {
+    -fx-spacing: 10px;
+    -fx-padding: 15px;
+    -fx-alignment: center-right;
+}
+
+.tab-content {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-border-color: #eee;
+    -fx-border-width: 0 1px 1px 1px;
+}

@@ -454,4 +454,29 @@ public class ServiceRequestService {
             }
         }
     }
+
+    /**
+     * Get service requests for a technician
+     * @param technicianId The technician ID
+     * @return List of service requests assigned to the technician
+     */
+    public List<ServiceRequest> getTechnicianServiceRequests(int technicianId) {
+        if (technicianId <= 0) {
+            throw new IllegalArgumentException("Invalid technician ID");
+        }
+
+        // Get service requests assigned to this technician
+        List<ServiceRequest> serviceRequests = serviceRequestDAO.findByTechnicianId(technicianId);
+
+        // Load customer details for each service request
+        serviceRequests.forEach(this::loadCustomerDetails);
+
+        // Load technician details (including the assigned technician)
+        serviceRequests.forEach(sr -> {
+            List<Technician> technicians = serviceRequestDAO.getTechniciansForServiceRequest(sr.getJobId());
+            sr.setTechnicians(technicians);
+        });
+
+        return serviceRequests;
+    }
 }

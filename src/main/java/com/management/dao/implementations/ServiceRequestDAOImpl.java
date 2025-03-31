@@ -519,6 +519,15 @@ public class ServiceRequestDAOImpl implements ServiceRequestDAO {
         return 0.0;
     }
 
+    @Override
+    public List<Technician> getTechniciansForServiceRequest(int jobId) {
+        if (jobId <= 0) {
+            throw new IllegalArgumentException("Invalid job ID");
+        }
+
+        return findTechniciansForJob(jobId);
+    }
+
     private ServiceRequest mapResultSetToServiceRequest(ResultSet rs) throws SQLException {
         ServiceRequest serviceRequest = new ServiceRequest();
 

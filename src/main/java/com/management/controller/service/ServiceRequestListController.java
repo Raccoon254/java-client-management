@@ -7,6 +7,7 @@ import com.management.service.TechnicianService;
 import com.management.util.AlertUtils;
 import com.management.util.CSVExporter;
 import com.management.util.FXMLLoaderUtil;
+
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,9 +20,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.css.PseudoClass;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Predicate;
@@ -38,28 +41,46 @@ public class ServiceRequestListController {
     private TableView<ServiceRequest> serviceRequestTable;
 
     @FXML
+    private TableColumn<ServiceRequest, String> technicianColumn;
+
+    @FXML
+    private TableColumn<ServiceRequest, String> requestNoColumn;
+
+    @FXML
+    private TableColumn<ServiceRequest, String> poReferenceColumn;
+
+    @FXML
     private TableColumn<ServiceRequest, String> dateColumn;
 
     @FXML
-    private TableColumn<ServiceRequest, String> customerColumn;
+    private TableColumn<ServiceRequest, String> startTimeColumn;
 
     @FXML
-    private TableColumn<ServiceRequest, String> descriptionColumn;
+    private TableColumn<ServiceRequest, String> endTimeColumn;
 
     @FXML
     private TableColumn<ServiceRequest, String> statusColumn;
 
     @FXML
-    private TableColumn<ServiceRequest, String> locationColumn;
-
-    @FXML
-    private TableColumn<ServiceRequest, Double> costColumn;
-
-    @FXML
     private TextField searchField;
 
     @FXML
-    private ComboBox<String> statusFilterBox;
+    private TabPane statusTabPane;
+
+    @FXML
+    private Tab allTab;
+
+    @FXML
+    private Tab pendingTab;
+
+    @FXML
+    private Tab confirmedTab;
+
+    @FXML
+    private Tab completedTab;
+
+    @FXML
+    private Tab cancelledTab;
 
     @FXML
     private DatePicker startDatePicker;
@@ -83,6 +104,9 @@ public class ServiceRequestListController {
     private Button deleteButton;
 
     @FXML
+    private Button viewDetailsButton;
+
+    @FXML
     private Button refreshButton;
 
     @FXML
@@ -93,10 +117,17 @@ public class ServiceRequestListController {
 
     private ServiceRequestService serviceRequestService;
     private CustomerService customerService;
+    private TechnicianService technicianService;
     private ObservableList<ServiceRequest> serviceRequestList = FXCollections.observableArrayList();
     private FilteredList<ServiceRequest> filteredServiceRequests;
     private boolean selectionMode = false;
     private java.util.function.Consumer<Integer> onServiceRequestSelectedCallback;
+
+    // Status constants
+    private static final String STATUS_PENDING = "Pending";
+    private static final String STATUS_CONFIRMED = "Confirmed";
+    private static final String STATUS_COMPLETED = "Completed";
+    private static final String STATUS_CANCELLED = "Cancelled";
 
     /**
      * Initialize the controller
@@ -106,72 +137,50 @@ public class ServiceRequestListController {
         // Initialize table columns
         dateColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getServiceDate()
-                        .format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))));
+                        .format(DateTimeFormatter.ofPattern("EEE, MM/dd/yyyy"))));
 
-        customerColumn.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getCustomer() != null) {
-                return new SimpleStringProperty(cellData.getValue().getCustomer().getFirstName() + " " +
-                        cellData.getValue().getCustomer().getLastName());
+        technicianColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue().getTechnicians() != null && !cellData.getValue().getTechnicians().isEmpty()) {
+                return new SimpleStringProperty(cellData.getValue().getTechnicians().get(0).getFullName());
+            }
+            return new SimpleStringProperty("Unassigned");
+        });
+
+        requestNoColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty("#" + cellData.getValue().getJobId()));
+
+        poReferenceColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getRefNo() != null ?
+                        cellData.getValue().getRefNo() : ""));
+
+        startTimeColumn.setCellValueFactory(cellData -> {
+            LocalTime startTime = cellData.getValue().getStartTime();
+            if (startTime != null) {
+                return new SimpleStringProperty(startTime.format(DateTimeFormatter.ofPattern("h:mm a")));
             }
             return new SimpleStringProperty("");
         });
 
-        descriptionColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getDescription()));
+        endTimeColumn.setCellValueFactory(cellData -> {
+            LocalTime endTime = cellData.getValue().getEndTime();
+            if (endTime != null) {
+                return new SimpleStringProperty(endTime.format(DateTimeFormatter.ofPattern("h:mm a")));
+            }
+            return new SimpleStringProperty("");
+        });
 
         statusColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getStatus()));
 
-        locationColumn.setCellValueFactory(cellData -> {
-            ServiceRequest sr = cellData.getValue();
-            String location = sr.getServiceCity() != null ? sr.getServiceCity() : "";
-            if (sr.getServiceState() != null) {
-                location += location.isEmpty() ? sr.getServiceState() : ", " + sr.getServiceState();
-            }
-            return new SimpleStringProperty(location);
-        });
-
-        costColumn.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getTotalCost()));
-
-        // Set up cell factory for cost column to format as currency
-        costColumn.setCellFactory(column -> new TableCell<ServiceRequest, Double>() {
-            @Override
-            protected void updateItem(Double amount, boolean empty) {
-                super.updateItem(amount, empty);
-                if (empty || amount == null) {
-                    setText(null);
-                } else {
-                    setText(String.format("$%.2f", amount));
-                }
-            }
-        });
+        // Custom cell factories for styling based on status
+        setupStatusCellFactory();
 
         // Set up the search and filter functionality
         filteredServiceRequests = new FilteredList<>(serviceRequestList, p -> true);
 
         // Configure search field listener
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredServiceRequests.setPredicate(createPredicate(
-                    newValue,
-                    statusFilterBox.getValue(),
-                    startDatePicker.getValue(),
-                    endDatePicker.getValue()
-            ));
-            updateStatusLabel();
-        });
-
-        // Configure status combobox for filtering
-        statusFilterBox.getItems().add("All Statuses");
-        statusFilterBox.setValue("All Statuses");
-        statusFilterBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            filteredServiceRequests.setPredicate(createPredicate(
-                    searchField.getText(),
-                    newVal,
-                    startDatePicker.getValue(),
-                    endDatePicker.getValue()
-            ));
-            updateStatusLabel();
+            applyFilters();
         });
 
         // Connect filtered list to TableView
@@ -180,23 +189,12 @@ public class ServiceRequestListController {
         serviceRequestTable.setItems(sortedServiceRequests);
 
         // Set up date filter buttons
-        applyDateFilterButton.setOnAction(e -> {
-            filteredServiceRequests.setPredicate(createPredicate(
-                    searchField.getText(),
-                    statusFilterBox.getValue(),
-                    startDatePicker.getValue(),
-                    endDatePicker.getValue()
-            ));
-            updateStatusLabel();
-        });
+        applyDateFilterButton.setOnAction(e -> applyFilters());
+        resetFilterButton.setOnAction(e -> resetFilters());
 
-        resetFilterButton.setOnAction(e -> {
-            searchField.clear();
-            statusFilterBox.setValue("All Statuses");
-            startDatePicker.setValue(null);
-            endDatePicker.setValue(null);
-            filteredServiceRequests.setPredicate(p -> true);
-            updateStatusLabel();
+        // Set up tab selection listener
+        statusTabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            applyFilters();
         });
 
         // Enable/disable buttons based on selection
@@ -204,29 +202,109 @@ public class ServiceRequestListController {
             boolean hasSelection = newSelection != null;
             editButton.setDisable(!hasSelection);
             deleteButton.setDisable(!hasSelection);
+            viewDetailsButton.setDisable(!hasSelection);
         });
 
         // Double-click to view details
         serviceRequestTable.setRowFactory(tv -> {
-            TableRow<ServiceRequest> row = new TableRow<>();
+            TableRow<ServiceRequest> row = new TableRow<ServiceRequest>() {
+                @Override
+                protected void updateItem(ServiceRequest item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setStyle("");
+                        getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+                        return;
+                    }
+
+                    // Add style class based on status
+                    getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+                    if (item.getStatus() != null) {
+                        switch (item.getStatus()) {
+                            case STATUS_PENDING:
+                                getStyleClass().add("status-pending");
+                                break;
+                            case STATUS_CONFIRMED:
+                                getStyleClass().add("status-confirmed");
+                                break;
+                            case STATUS_COMPLETED:
+                                getStyleClass().add("status-completed");
+                                break;
+                            case STATUS_CANCELLED:
+                                getStyleClass().add("status-cancelled");
+                                break;
+                        }
+                    }
+                }
+            };
+
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     handleViewServiceRequestDetails(row.getItem());
                 }
             });
+
             return row;
         });
 
         // Set default button states
         editButton.setDisable(true);
         deleteButton.setDisable(true);
+        viewDetailsButton.setDisable(true);
 
         // Set action handlers
         addButton.setOnAction(e -> handleAddServiceRequest());
         editButton.setOnAction(e -> handleEditServiceRequest());
         deleteButton.setOnAction(e -> handleDeleteServiceRequest());
+        viewDetailsButton.setOnAction(e -> {
+            ServiceRequest selectedServiceRequest = serviceRequestTable.getSelectionModel().getSelectedItem();
+            if (selectedServiceRequest != null) {
+                handleViewServiceRequestDetails(selectedServiceRequest);
+            }
+        });
         refreshButton.setOnAction(e -> refreshServiceRequestList());
         exportButton.setOnAction(e -> handleExportServiceRequests());
+    }
+
+    /**
+     * Set up status column cell factory for styling
+     */
+    private void setupStatusCellFactory() {
+        statusColumn.setCellFactory(column -> new TableCell<ServiceRequest, String>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+
+                if (status == null || empty) {
+                    setText(null);
+                    setStyle("");
+                    getStyleClass().removeAll("status-badge", "status-badge-pending",
+                            "status-badge-confirmed", "status-badge-completed", "status-badge-cancelled");
+                    return;
+                }
+
+                setText(status);
+                getStyleClass().removeAll("status-badge", "status-badge-pending",
+                        "status-badge-confirmed", "status-badge-completed", "status-badge-cancelled");
+                getStyleClass().add("status-badge");
+
+                switch (status) {
+                    case STATUS_PENDING:
+                        getStyleClass().add("status-badge-pending");
+                        break;
+                    case STATUS_CONFIRMED:
+                        getStyleClass().add("status-badge-confirmed");
+                        break;
+                    case STATUS_COMPLETED:
+                        getStyleClass().add("status-badge-completed");
+                        break;
+                    case STATUS_CANCELLED:
+                        getStyleClass().add("status-badge-cancelled");
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -236,7 +314,6 @@ public class ServiceRequestListController {
     public void setServiceRequestService(ServiceRequestService serviceRequestService) {
         this.serviceRequestService = serviceRequestService;
         loadServiceRequests();
-        loadStatusFilters();
     }
 
     /**
@@ -245,6 +322,61 @@ public class ServiceRequestListController {
      */
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
+    }
+
+    /**
+     * Set the technician service
+     * @param technicianService The technician service to use
+     */
+    public void setTechnicianService(TechnicianService technicianService) {
+        this.technicianService = technicianService;
+    }
+
+    /**
+     * Apply all filters based on current UI state
+     */
+    private void applyFilters() {
+        String searchText = searchField.getText();
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        String statusFilter = getSelectedStatusFilter();
+
+        filteredServiceRequests.setPredicate(createPredicate(searchText, statusFilter, startDate, endDate));
+        updateStatusLabel();
+    }
+
+    /**
+     * Get the currently selected status filter from tabs
+     * @return Selected status or null for all
+     */
+    private String getSelectedStatusFilter() {
+        Tab selectedTab = statusTabPane.getSelectionModel().getSelectedItem();
+
+        if (selectedTab == allTab) {
+            return null;
+        } else if (selectedTab == pendingTab) {
+            return STATUS_PENDING;
+        } else if (selectedTab == confirmedTab) {
+            return STATUS_CONFIRMED;
+        } else if (selectedTab == completedTab) {
+            return STATUS_COMPLETED;
+        } else if (selectedTab == cancelledTab) {
+            return STATUS_CANCELLED;
+        }
+
+        return null;
+    }
+
+    /**
+     * Reset all filters to their default state
+     */
+    private void resetFilters() {
+        searchField.clear();
+        statusTabPane.getSelectionModel().select(allTab);
+        startDatePicker.setValue(null);
+        endDatePicker.setValue(null);
+        filteredServiceRequests.setPredicate(p -> true);
+        updateStatusLabel();
     }
 
     /**
@@ -266,6 +398,7 @@ public class ServiceRequestListController {
             if (searchText != null && !searchText.isEmpty()) {
                 String lowerCaseSearch = searchText.toLowerCase();
 
+                // Search in various fields
                 matchesSearch = (serviceRequest.getDescription() != null &&
                         serviceRequest.getDescription().toLowerCase().contains(lowerCaseSearch)) ||
                         (serviceRequest.getServiceAddress() != null &&
@@ -275,7 +408,18 @@ public class ServiceRequestListController {
                         (serviceRequest.getBuildingName() != null &&
                                 serviceRequest.getBuildingName().toLowerCase().contains(lowerCaseSearch)) ||
                         (serviceRequest.getRefNo() != null &&
-                                serviceRequest.getRefNo().toLowerCase().contains(lowerCaseSearch));
+                                serviceRequest.getRefNo().toLowerCase().contains(lowerCaseSearch)) ||
+                        (String.valueOf(serviceRequest.getJobId()).contains(lowerCaseSearch));
+
+                // Search in technician information
+                if (serviceRequest.getTechnicians() != null && !serviceRequest.getTechnicians().isEmpty()) {
+                    for (var technician : serviceRequest.getTechnicians()) {
+                        if (technician.getFullName().toLowerCase().contains(lowerCaseSearch)) {
+                            matchesSearch = true;
+                            break;
+                        }
+                    }
+                }
 
                 // Also search in customer details if available
                 if (serviceRequest.getCustomer() != null) {
@@ -287,8 +431,8 @@ public class ServiceRequestListController {
                 }
             }
 
-            // Apply status filter if status is not "All Statuses"
-            if (status != null && !status.equals("All Statuses")) {
+            // Apply status filter if provided
+            if (status != null && !status.isEmpty()) {
                 matchesStatus = (serviceRequest.getStatus() != null && serviceRequest.getStatus().equals(status));
             }
 
@@ -331,38 +475,6 @@ public class ServiceRequestListController {
     }
 
     /**
-     * Load status filter options
-     */
-    private void loadStatusFilters() {
-        try {
-            // Remember the current selection
-            String currentSelection = statusFilterBox.getValue();
-
-            // Clear and add default "All Statuses" option
-            statusFilterBox.getItems().clear();
-            statusFilterBox.getItems().add("All Statuses");
-
-            // Add unique statuses from service requests
-            serviceRequestList.stream()
-                    .map(ServiceRequest::getStatus)
-                    .filter(status -> status != null && !status.isEmpty())
-                    .distinct()
-                    .sorted()
-                    .forEach(statusFilterBox.getItems()::add);
-
-            // Restore selection or set to "All Statuses"
-            if (currentSelection != null && statusFilterBox.getItems().contains(currentSelection)) {
-                statusFilterBox.setValue(currentSelection);
-            } else {
-                statusFilterBox.setValue("All Statuses");
-            }
-        } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error", "Failed to load status filters: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Update the status label with current filter results
      */
     private void updateStatusLabel() {
@@ -381,7 +493,6 @@ public class ServiceRequestListController {
      */
     private void refreshServiceRequestList() {
         loadServiceRequests();
-        loadStatusFilters();
     }
 
     /**
@@ -518,10 +629,6 @@ public class ServiceRequestListController {
         }
     }
 
-    public void setTechnicianService(TechnicianService technicianService) {
-        // TODO
-    }
-
     /**
      * Set selection mode for the controller
      * @param selectionMode true to enable selection mode
@@ -548,7 +655,38 @@ public class ServiceRequestListController {
         // Change default row behavior when in selection mode
         if (selectionMode && callback != null) {
             serviceRequestTable.setRowFactory(tv -> {
-                TableRow<ServiceRequest> row = new TableRow<>();
+                TableRow<ServiceRequest> row = new TableRow<ServiceRequest>() {
+                    @Override
+                    protected void updateItem(ServiceRequest item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item == null || empty) {
+                            setStyle("");
+                            getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+                            return;
+                        }
+
+                        // Add style class based on status
+                        getStyleClass().removeAll("status-pending", "status-confirmed", "status-completed", "status-cancelled");
+                        if (item.getStatus() != null) {
+                            switch (item.getStatus()) {
+                                case STATUS_PENDING:
+                                    getStyleClass().add("status-pending");
+                                    break;
+                                case STATUS_CONFIRMED:
+                                    getStyleClass().add("status-confirmed");
+                                    break;
+                                case STATUS_COMPLETED:
+                                    getStyleClass().add("status-completed");
+                                    break;
+                                case STATUS_CANCELLED:
+                                    getStyleClass().add("status-cancelled");
+                                    break;
+                            }
+                        }
+                    }
+                };
+
                 row.setOnMouseClicked(event -> {
                     if (!row.isEmpty()) {
                         ServiceRequest sr = row.getItem();

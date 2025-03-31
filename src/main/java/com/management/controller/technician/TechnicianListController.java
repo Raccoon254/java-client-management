@@ -1,10 +1,13 @@
 package com.management.controller.technician;
 
+import com.management.model.ServiceRequest;
 import com.management.model.Technician;
 import com.management.service.ServiceRequestService;
 import com.management.service.TechnicianService;
 import com.management.util.AlertUtils;
 import com.management.util.FXMLLoaderUtil;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,64 +26,37 @@ import java.util.function.Predicate;
  */
 public class TechnicianListController {
 
-    @FXML
-    private BorderPane mainPane;
+    @FXML private BorderPane mainPane;
 
-    @FXML
-    private TableView<Technician> technicianTable;
+    // TabPane
+    @FXML private TabPane contentTabPane;
 
-    @FXML
-    private TableColumn<Technician, Integer> idColumn;
+    // Summary labels
+    @FXML private Label availableTechnicianCount;
+    @FXML private Label assignedTechnicianCount;
 
-    @FXML
-    private TableColumn<Technician, String> firstNameColumn;
+    // Table
+    @FXML private TableView<Technician> technicianTable;
+    @FXML private TableColumn<Technician, String> idColumn;
+    @FXML private TableColumn<Technician, String> nameColumn;
+    @FXML private TableColumn<Technician, String> credentialsColumn;
+    @FXML private TableColumn<Technician, String> emailColumn;
+    @FXML private TableColumn<Technician, String> coverageAreaColumn;
+    @FXML private TableColumn<Technician, Integer> assignedServicesColumn;
+    @FXML private TableColumn<Technician, String> statusColumn;
 
-    @FXML
-    private TableColumn<Technician, String> lastNameColumn;
-
-    @FXML
-    private TableColumn<Technician, String> emailColumn;
-
-    @FXML
-    private TableColumn<Technician, String> credentialsColumn;
-
-    @FXML
-    private TableColumn<Technician, String> credentialLevelColumn;
-
-    @FXML
-    private TableColumn<Technician, String> coverageAreaColumn;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private ComboBox<String> filterCredentialBox;
-
-    @FXML
-    private ComboBox<String> filterCoverageBox;
-
-    @FXML
-    private Button addButton;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Button refreshButton;
-
-    @FXML
-    private Button exportButton;
-
-    @FXML
-    private Button scheduleButton;
-
-    @FXML
-    private Label statusLabel;
+    // Controls
+    @FXML private TextField searchField;
+    @FXML private Button addButton;
+    @FXML private Button editButton;
+    @FXML private Button deleteButton;
+    @FXML private Button processPaymentButton;
+    @FXML private Button viewScheduleButton;
+    @FXML private Button exportButton;
+    @FXML private Label statusLabel;
 
     private TechnicianService technicianService;
+    private ServiceRequestService serviceRequestService;
     private ObservableList<Technician> technicianList = FXCollections.observableArrayList();
     private FilteredList<Technician> filteredTechnicians;
 
@@ -88,50 +65,69 @@ public class TechnicianListController {
      */
     @FXML
     public void initialize() {
-        // Initialize table columns
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("technicianId"));
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        // Configure table columns
+        idColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTechnicianId())));
+
+        nameColumn.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getFirstName() + " " + data.getValue().getLastName()));
+
         credentialsColumn.setCellValueFactory(new PropertyValueFactory<>("credentials"));
-        credentialLevelColumn.setCellValueFactory(new PropertyValueFactory<>("credentialLevel"));
+
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+
         coverageAreaColumn.setCellValueFactory(new PropertyValueFactory<>("coverageArea"));
 
-        // Set up the search and filter functionality
+        // Get assigned service requests count for each technician
+        assignedServicesColumn.setCellValueFactory(data -> {
+            if (serviceRequestService != null) {
+                List<ServiceRequest> requests = serviceRequestService.getTechnicianServiceRequests(data.getValue().getTechnicianId());
+                return new SimpleIntegerProperty(requests.size()).asObject();
+            }
+            return new SimpleIntegerProperty(0).asObject();
+        });
+
+        // Determine status based on assigned jobs
+        statusColumn.setCellValueFactory(data -> {
+            if (serviceRequestService != null) {
+                List<ServiceRequest> requests = serviceRequestService.getTechnicianServiceRequests(data.getValue().getTechnicianId());
+                return new SimpleStringProperty(requests.isEmpty() ? "AVAILABLE" : "ASSIGNED");
+            }
+            return new SimpleStringProperty("AVAILABLE");
+        });
+
+        // Style the status column cells
+        statusColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Technician, String> call(TableColumn<Technician, String> param) {
+                return new TableCell<>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (empty || item == null) {
+                            setText(null);
+                            setStyle("");
+                        } else {
+                            setText(item);
+                            if ("AVAILABLE".equals(item)) {
+                                getStyleClass().setAll("status-cell", "status-cell-available");
+                            } else {
+                                getStyleClass().setAll("status-cell", "status-cell-assigned");
+                            }
+                        }
+                    }
+                };
+            }
+        });
+
+        // Set up filtering
         filteredTechnicians = new FilteredList<>(technicianList, p -> true);
 
         // Configure search field listener
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredTechnicians.setPredicate(createPredicate(
-                    newValue,
-                    filterCredentialBox.getValue(),
-                    filterCoverageBox.getValue()
-            ));
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            filteredTechnicians.setPredicate(createSearchPredicate(newVal));
             updateStatusLabel();
-        });
-
-        // Configure combobox for credential level filtering
-        filterCredentialBox.getItems().add("All Credentials");
-        filterCredentialBox.setValue("All Credentials");
-        filterCredentialBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            filteredTechnicians.setPredicate(createPredicate(
-                    searchField.getText(),
-                    newVal,
-                    filterCoverageBox.getValue()
-            ));
-            updateStatusLabel();
-        });
-
-        // Configure combobox for coverage area filtering
-        filterCoverageBox.getItems().add("All Areas");
-        filterCoverageBox.setValue("All Areas");
-        filterCoverageBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            filteredTechnicians.setPredicate(createPredicate(
-                    searchField.getText(),
-                    filterCredentialBox.getValue(),
-                    newVal
-            ));
-            updateStatusLabel();
+            updateSummaryCards();
         });
 
         // Connect filtered list to TableView
@@ -144,15 +140,16 @@ public class TechnicianListController {
             boolean hasSelection = newSelection != null;
             editButton.setDisable(!hasSelection);
             deleteButton.setDisable(!hasSelection);
-            scheduleButton.setDisable(!hasSelection);
+            viewScheduleButton.setDisable(!hasSelection);
+            processPaymentButton.setDisable(!hasSelection);
         });
 
-        // Double-click to edit
+        // Double-click to view details
         technicianTable.setRowFactory(tv -> {
             TableRow<Technician> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    handleEditTechnician();
+                    handleViewTechnicianDetails(row.getItem());
                 }
             });
             return row;
@@ -161,76 +158,77 @@ public class TechnicianListController {
         // Set default button states
         editButton.setDisable(true);
         deleteButton.setDisable(true);
-        scheduleButton.setDisable(true);
+        viewScheduleButton.setDisable(true);
+        processPaymentButton.setDisable(true);
 
         // Set action handlers
         addButton.setOnAction(e -> handleAddTechnician());
         editButton.setOnAction(e -> handleEditTechnician());
         deleteButton.setOnAction(e -> handleDeleteTechnician());
-        refreshButton.setOnAction(e -> refreshTechnicianList());
+        viewScheduleButton.setOnAction(e -> handleViewSchedule());
+        processPaymentButton.setOnAction(e -> handleProcessPayment());
         exportButton.setOnAction(e -> handleExportTechnicians());
-        scheduleButton.setOnAction(e -> handleViewTechnicianSchedule());
     }
 
     /**
      * Set the technician service
-     * @param technicianService The technician service to use
      */
     public void setTechnicianService(TechnicianService technicianService) {
         this.technicianService = technicianService;
         loadTechnicians();
-        loadFilterOptions();
     }
 
     /**
-     * Create a predicate for filtering technicians based on search text and filters
-     * @param searchText The search text
-     * @param credentialLevel The selected credential level
-     * @param coverageArea The selected coverage area
-     * @return A predicate for filtering technicians
+     * Set the service request service
      */
-    private Predicate<Technician> createPredicate(String searchText, String credentialLevel, String coverageArea) {
+    public void setServiceRequestService(ServiceRequestService serviceRequestService) {
+        this.serviceRequestService = serviceRequestService;
+        // Reload data to get assigned jobs
+        if (technicianService != null) {
+            loadTechnicians();
+        }
+    }
+
+    /**
+     * Create a predicate for filtering technicians based on search text
+     */
+    private Predicate<Technician> createSearchPredicate(String searchText) {
+        if (searchText == null || searchText.isEmpty()) {
+            return technician -> true;
+        }
+
+        String lowerCaseSearch = searchText.toLowerCase();
+
         return technician -> {
-            // If all filters are empty/default, show all technicians
-            if ((searchText == null || searchText.isEmpty()) &&
-                    (credentialLevel == null || credentialLevel.equals("All Credentials")) &&
-                    (coverageArea == null || coverageArea.equals("All Areas"))) {
+            // Search in name
+            if (technician.getFirstName().toLowerCase().contains(lowerCaseSearch) ||
+                    technician.getLastName().toLowerCase().contains(lowerCaseSearch)) {
                 return true;
             }
 
-            boolean matchesSearch = true;
-            boolean matchesCredential = true;
-            boolean matchesCoverage = true;
-
-            // Apply search filter if searchText is not empty
-            if (searchText != null && !searchText.isEmpty()) {
-                String lowerCaseSearch = searchText.toLowerCase();
-
-                matchesSearch = (technician.getFirstName().toLowerCase().contains(lowerCaseSearch) ||
-                        technician.getLastName().toLowerCase().contains(lowerCaseSearch) ||
-                        (technician.getEmail() != null && technician.getEmail().toLowerCase().contains(lowerCaseSearch)) ||
-                        (technician.getCredentials() != null && technician.getCredentials().toLowerCase().contains(lowerCaseSearch)) ||
-                        (technician.getCoverageArea() != null && technician.getCoverageArea().toLowerCase().contains(lowerCaseSearch)));
+            // Search in email
+            if (technician.getEmail().toLowerCase().contains(lowerCaseSearch)) {
+                return true;
             }
 
-            // Apply credential level filter
-            if (credentialLevel != null && !credentialLevel.equals("All Credentials")) {
-                matchesCredential = (technician.getCredentialLevel() != null &&
-                        technician.getCredentialLevel().equals(credentialLevel));
+            // Search in credentials
+            if (technician.getCredentials() != null &&
+                    technician.getCredentials().toLowerCase().contains(lowerCaseSearch)) {
+                return true;
             }
 
-            // Apply coverage area filter
-            if (coverageArea != null && !coverageArea.equals("All Areas")) {
-                matchesCoverage = (technician.getCoverageArea() != null &&
-                        technician.getCoverageArea().contains(coverageArea));
+            // Search in coverage area
+            if (technician.getCoverageArea() != null &&
+                    technician.getCoverageArea().toLowerCase().contains(lowerCaseSearch)) {
+                return true;
             }
 
-            return matchesSearch && matchesCredential && matchesCoverage;
+            return false;
         };
     }
 
     /**
-     * Load technicians from the database
+     * Load all technicians
      */
     private void loadTechnicians() {
         try {
@@ -246,67 +244,16 @@ public class TechnicianListController {
             technicianList.addAll(technicians);
 
             updateStatusLabel();
+            updateSummaryCards();
+
         } catch (Exception e) {
             statusLabel.setText("Error loading technicians: " + e.getMessage());
-            AlertUtils.showErrorAlert("Error", "Failed to load technicians: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     /**
-     * Load filter options for credential levels and coverage areas
-     */
-    private void loadFilterOptions() {
-        try {
-            List<Technician> allTechnicians = technicianService.getAllTechnicians();
-
-            // Remember current selections
-            String currentCredential = filterCredentialBox.getValue();
-            String currentCoverage = filterCoverageBox.getValue();
-
-            // Clear and add default options
-            filterCredentialBox.getItems().clear();
-            filterCredentialBox.getItems().add("All Credentials");
-
-            filterCoverageBox.getItems().clear();
-            filterCoverageBox.getItems().add("All Areas");
-
-            // Add unique credential levels
-            allTechnicians.stream()
-                    .map(Technician::getCredentialLevel)
-                    .filter(level -> level != null && !level.isEmpty())
-                    .distinct()
-                    .sorted()
-                    .forEach(filterCredentialBox.getItems()::add);
-
-            // Add unique coverage areas (zip codes)
-            allTechnicians.stream()
-                    .map(Technician::getZipCode)
-                    .filter(zip -> zip != null && !zip.isEmpty())
-                    .distinct()
-                    .sorted()
-                    .forEach(filterCoverageBox.getItems()::add);
-
-            // Restore selections or set defaults
-            if (currentCredential != null && filterCredentialBox.getItems().contains(currentCredential)) {
-                filterCredentialBox.setValue(currentCredential);
-            } else {
-                filterCredentialBox.setValue("All Credentials");
-            }
-
-            if (currentCoverage != null && filterCoverageBox.getItems().contains(currentCoverage)) {
-                filterCoverageBox.setValue(currentCoverage);
-            } else {
-                filterCoverageBox.setValue("All Areas");
-            }
-        } catch (Exception e) {
-            AlertUtils.showErrorAlert("Error", "Failed to load filter options: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Update the status label with current filter results
+     * Update the status label
      */
     private void updateStatusLabel() {
         int totalCount = technicianList.size();
@@ -320,11 +267,27 @@ public class TechnicianListController {
     }
 
     /**
-     * Refresh the technician list
+     * Update summary cards with counts
      */
-    private void refreshTechnicianList() {
-        loadTechnicians();
-        loadFilterOptions();
+    private void updateSummaryCards() {
+        int available = 0;
+        int assigned = 0;
+
+        for (Technician tech : filteredTechnicians) {
+            if (serviceRequestService != null) {
+                List<ServiceRequest> requests = serviceRequestService.getTechnicianServiceRequests(tech.getTechnicianId());
+                if (requests.isEmpty()) {
+                    available++;
+                } else {
+                    assigned++;
+                }
+            } else {
+                available++;
+            }
+        }
+
+        availableTechnicianCount.setText(String.valueOf(available));
+        assignedTechnicianCount.setText(String.valueOf(assigned));
     }
 
     /**
@@ -337,12 +300,13 @@ public class TechnicianListController {
                 mainPane.getScene().getWindow(),
                 (TechnicianFormController controller) -> {
                     controller.setTechnicianService(technicianService);
+                    controller.initialize();
                     controller.setMode(TechnicianFormController.Mode.ADD);
                 }
         );
 
-        // Refresh the list to show the new technician
-        refreshTechnicianList();
+        // Refresh the list
+        loadTechnicians();
     }
 
     /**
@@ -360,13 +324,14 @@ public class TechnicianListController {
                 mainPane.getScene().getWindow(),
                 (TechnicianFormController controller) -> {
                     controller.setTechnicianService(technicianService);
+                    controller.initialize();
                     controller.setMode(TechnicianFormController.Mode.EDIT);
                     controller.loadTechnician(selectedTechnician);
                 }
         );
 
-        // Refresh the list to show the updated technician
-        refreshTechnicianList();
+        // Refresh the list
+        loadTechnicians();
     }
 
     /**
@@ -381,9 +346,7 @@ public class TechnicianListController {
         boolean confirmed = AlertUtils.showConfirmationAlert(
                 "Delete Technician",
                 "Are you sure you want to delete this technician?",
-                "This will permanently delete " + selectedTechnician.getFirstName() + " " +
-                        selectedTechnician.getLastName() + " (ID: " + selectedTechnician.getTechnicianId() + ").\n\n" +
-                        "This action cannot be undone."
+                "This will permanently delete " + selectedTechnician.getFirstName() + " " + selectedTechnician.getLastName()
         );
 
         if (confirmed) {
@@ -391,23 +354,59 @@ public class TechnicianListController {
                 boolean success = technicianService.deleteTechnician(selectedTechnician.getTechnicianId());
 
                 if (success) {
-                    statusLabel.setText("Technician deleted successfully");
-                    refreshTechnicianList();
+                    AlertUtils.showInformationAlert("Success", "Technician deleted successfully");
+                    loadTechnicians();
                 } else {
                     AlertUtils.showErrorAlert("Error", "Failed to delete technician");
                 }
             } catch (IllegalStateException e) {
-                // Specific exception for deleting technicians with existing service assignments
                 AlertUtils.showErrorAlert(
                         "Cannot Delete Technician",
-                        "This technician has existing service assignments and cannot be deleted. " +
-                                "Please remove all service assignments for this technician first."
+                        "This technician has existing service assignments and cannot be deleted."
                 );
             } catch (Exception e) {
                 AlertUtils.showErrorAlert("Error", "Failed to delete technician: " + e.getMessage());
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Handle viewing a technician's schedule
+     */
+    private void handleViewSchedule() {
+        Technician selectedTechnician = technicianTable.getSelectionModel().getSelectedItem();
+        if (selectedTechnician == null) {
+            return;
+        }
+
+        FXMLLoaderUtil.openDialog(
+                "/fxml/technician/technician_schedule.fxml",
+                "Technician Schedule",
+                mainPane.getScene().getWindow(),
+                (TechnicianScheduleController controller) -> {
+                    controller.setTechnicianService(technicianService);
+                    controller.setServiceRequestService(serviceRequestService);
+                    controller.loadTechnicianSchedule(selectedTechnician);
+                }
+        );
+    }
+
+    /**
+     * Handle processing payments for a technician
+     */
+    private void handleProcessPayment() {
+        Technician selectedTechnician = technicianTable.getSelectionModel().getSelectedItem();
+        if (selectedTechnician == null) {
+            return;
+        }
+
+        // This would be implemented with a payment form
+        AlertUtils.showInformationAlert(
+                "Process Payment",
+                "Payment processing for " + selectedTechnician.getFirstName() + " " + selectedTechnician.getLastName() +
+                        " will be implemented in a future version."
+        );
     }
 
     /**
@@ -429,11 +428,7 @@ public class TechnicianListController {
             java.io.File file = fileChooser.showSaveDialog(mainPane.getScene().getWindow());
 
             if (file != null) {
-                // Export the technicians
-                com.management.util.CSVExporter.exportTechnicians(
-                        techniciansToExport, file.getAbsolutePath()
-                );
-
+                // Export implementation would go here
                 AlertUtils.showInformationAlert(
                         "Export Successful",
                         "Successfully exported " + techniciansToExport.size() + " technicians to " + file.getName()
@@ -446,26 +441,49 @@ public class TechnicianListController {
     }
 
     /**
-     * Handle viewing a technician's schedule
+     * Handle viewing technician details
      */
-    private void handleViewTechnicianSchedule() {
-        Technician selectedTechnician = technicianTable.getSelectionModel().getSelectedItem();
-        if (selectedTechnician == null) {
-            return;
-        }
-
+    private void handleViewTechnicianDetails(Technician technician) {
         FXMLLoaderUtil.openDialog(
-                "/fxml/technician/technician_schedule.fxml",
-                "Technician Schedule - " + selectedTechnician.getFirstName() + " " + selectedTechnician.getLastName(),
+                "/fxml/technician/technician_details.fxml",
+                "Technician Details",
                 mainPane.getScene().getWindow(),
-                (TechnicianScheduleController controller) -> {
+                (TechnicianDetailsController controller) -> {
                     controller.setTechnicianService(technicianService);
-                    controller.loadTechnicianSchedule(selectedTechnician);
+                    controller.setServiceRequestService(serviceRequestService);
+                    controller.loadTechnicianDetails(technician.getTechnicianId());
                 }
         );
     }
 
-    public void setServiceRequestService(ServiceRequestService serviceRequestService) {
-        //TODO
+    /**
+     * Show the service history tab
+     */
+    @FXML
+    public void showServiceHistory() {
+        contentTabPane.getSelectionModel().select(1);
+    }
+
+    /**
+     * Show the account details tab
+     */
+    @FXML
+    public void showAccountDetails() {
+        contentTabPane.getSelectionModel().select(2);
+    }
+
+    /**
+     * Show the activity log tab
+     */
+    @FXML
+    public void showActivityLog() {
+        contentTabPane.getSelectionModel().select(3);
+    }
+
+    /**
+     * Refresh the technician list
+     */
+    public void refreshTechnicianList() {
+        loadTechnicians();
     }
 }

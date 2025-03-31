@@ -1,0 +1,78 @@
+/* Status-based row styling */
+.status-pending {
+    -fx-background-color: #ffeeba;
+}
+
+.status-confirmed {
+    -fx-background-color: #c3e6cb;
+}
+
+.status-completed {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+}
+
+.status-cancelled {
+    -fx-background-color: #f5c6cb;
+}
+
+/* Status badge styling */
+.status-badge {
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 5px;
+}
+
+.status-badge-pending {
+    -fx-background-color: #ffc107;
+}
+
+.status-badge-confirmed {
+    -fx-background-color: #28a745;
+}
+
+.status-badge-completed {
+    -fx-background-color: #6c757d;
+}
+
+.status-badge-cancelled {
+    -fx-background-color: #dc3545;
+}
+
+/* Tab styling */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #f8f9fa;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #e9ecef;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-focus-color: transparent;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-font-weight: bold;
+}
+
+/* Table styling */
+.table-view .column-header {
+    -fx-background-color: #343a40;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+}
+
+/* Details view button */
+.view-details-button {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+}
+
+.view-details-button:hover {
+    -fx-background-color: #5a6268;
+}
