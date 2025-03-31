@@ -95,6 +95,8 @@
 /* Remove table header line */
 .customer-table .column-header-background .filler {
     -fx-background-color: #303f71;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 10px;
 }
 
 /* Action buttons container */

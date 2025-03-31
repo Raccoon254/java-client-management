@@ -1,0 +1,121 @@
+/* Customer Form Specific Styles */
+
+.form-container {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Tab styling */
+.customer-tabs {
+    -fx-tab-min-width: 120px;
+}
+
+.customer-tabs .tab-header-area {
+    -fx-padding: 5px 0 0 0;
+}
+
+.customer-tabs .tab {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-padding: 10px 15px;
+    -fx-cursor: hand;
+}
+
+.customer-tabs .tab:selected {
+    -fx-background-color: #6c63ff;
+    -fx-border-color: transparent;
+}
+
+.customer-tabs .tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.customer-tabs .tab-content-area {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0 5px 5px 5px;
+}
+
+.tab-content {
+    -fx-background-color: white;
+}
+
+/* Form elements */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #495057;
+    -fx-font-weight: normal;
+}
+
+.form-field-disabled {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #6c757d;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-opacity: 0.8;
+}
+
+.form-buttons {
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+}
+
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12px;
+}
+
+.required-label {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 13px;
+    -fx-font-style: italic;
+}
+
+/* Button styling */
+.success-button {
+    -fx-background-color: #6c63ff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-min-width: 100px;
+}
+
+.success-button:hover {
+    -fx-background-color: #5a52e0;
+}
+
+.cancel-button {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #6c757d;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.secondary-button {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #495057;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.secondary-button:disabled {
+    -fx-opacity: 0.5;
+}
