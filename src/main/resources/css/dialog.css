@@ -1,58 +1,49 @@
+/* Modal Styling to Match Dashboard */
 .create-menu-dialog {
-    -fx-background-color: white;
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 10px;
     -fx-background-radius: 10px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+}
+
+.section-title {
+    -fx-text-fill: #1D2957;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
 }
 
 .create-menu-button {
-    -fx-background-radius: 8px;
-    -fx-padding: 15px;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1D2957;
+    -fx-font-size: 16px;
+    -fx-padding: 30px;
     -fx-cursor: hand;
-    -fx-transition: all 0.3s ease;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
+    -fx-min-height: 80px;
+    -fx-min-width: 120px;
 }
 
 .create-menu-button:hover {
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+    -fx-background-color: #e6e8ed;
 }
 
-.customer-button {
-    -fx-background-color: #3498db; /* Blue */
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #1D2957;
+    -fx-text-fill: #1D2957;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
 }
 
-.customer-button:hover {
-    -fx-background-color: #2980b9; /* Darker Blue */
+.label{
+    -fx-text-fill: #1D2957;
+    -fx-font-size: 16px;
+    -fx-font-weight: normal;
 }
 
-.technician-button {
-    -fx-background-color: #2ecc71; /* Green */
-}
-
-.technician-button:hover {
-    -fx-background-color: #27ae60; /* Darker Green */
-}
-
-.service-request-button {
-    -fx-background-color: #e74c3c; /* Red */
-}
-
-.service-request-button:hover {
-    -fx-background-color: #c0392b; /* Darker Red */
-}
-
-.quote-button {
-    -fx-background-color: #9b59b6; /* Purple */
-}
-
-.quote-button:hover {
-    -fx-background-color: #8e44ad; /* Darker Purple */
-}
-
-.payment-button {
-    -fx-background-color: #f39c12; /* Orange */
-}
-
-.payment-button:hover {
-    -fx-background-color: #d35400; /* Darker Orange */
+.secondary-button:hover {
+    -fx-background-color: rgba(29, 41, 87, 0.1);
 }

@@ -236,15 +236,18 @@
 }
 
 .back-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #3498db;
     -fx-font-size: 14px;
     -fx-cursor: hand;
-    -fx-padding: 5px 10px;
-}
-
-.back-button:hover {
-    -fx-text-fill: #fff;
+    -fx-padding: 5px;
+    -fx-pref-width: 40px !important;
+    -fx-min-height: 40px !important;
+    -fx-min-width: 40px !important;
+    -fx-max-height: 40px !important;
+    -fx-max-width: 40px !important;
+    -fx-pref-height: 40px !important;
+    -fx-border-radius: 100px !important;
+    -fx-background-radius: 100px !important;
+    -fx-background-color: rgba(255, 0, 0, 0.3);
 }
 
 .breadcrumb {

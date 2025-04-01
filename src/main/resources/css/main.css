@@ -77,18 +77,6 @@
     -fx-padding: 8px 20px;
 }
 
-.back-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #3498db;
-    -fx-font-size: 14px;
-    -fx-cursor: hand;
-    -fx-padding: 5px 10px;
-}
-
-.back-button:hover {
-    -fx-text-fill: #fff;
-}
-
 .breadcrumb {
     -fx-text-fill: #6c757d;
     -fx-font-size: 14px;

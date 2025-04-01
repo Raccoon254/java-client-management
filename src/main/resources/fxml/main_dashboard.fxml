@@ -12,6 +12,7 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane fx:id="mainBorderPane" prefHeight="768.0" prefWidth="1024.0" stylesheets="@../css/main.css,@../css/new_dashboard.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.controller.MainDashboardController">
     <!-- Top navigation bar -->
     <top>
@@ -64,7 +65,13 @@
                     <Insets left="20.0" right="20.0" top="10.0" bottom="10.0"/>
                 </padding>
 
-                <Button fx:id="backButton" text="Back" styleClass="back-button"/>
+                <Button fx:id="backButton" styleClass="back-button">
+                    <graphic>
+                        <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../images/icons/alt-arrow-left-svgrepo-com.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Label fx:id="breadcrumbLabel" styleClass="breadcrumb" text="Home > Dashboard">
                     <HBox.margin>
                         <Insets left="20.0"/>
