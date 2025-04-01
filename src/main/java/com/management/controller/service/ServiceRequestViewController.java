@@ -205,7 +205,7 @@ public class ServiceRequestViewController {
 
         try {
             // Load the form FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/management/view/service/service_request_form.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/service/service_request_form.fxml"));
             Parent formView = loader.load();
 
             // Get controller
@@ -322,7 +322,7 @@ public class ServiceRequestViewController {
         try {
             // Load the view FXML
             FXMLLoader loader = new FXMLLoader(ServiceRequestViewController.class.getResource(
-                    "/com/management/view/service/service_request_view.fxml"));
+                    "/fxml/service/service_request_view.fxml"));
             Parent root = loader.load();
 
             // Get controller

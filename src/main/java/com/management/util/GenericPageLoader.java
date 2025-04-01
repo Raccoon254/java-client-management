@@ -125,6 +125,7 @@ public class GenericPageLoader {
                 (ServiceRequestListController controller) -> {
                     controller.setServiceRequestService(serviceRequestService);
                     controller.setCustomerService(customerService);
+                    controller.setTechnicianService(technicianService);
                     controller.initialize();
                 },
                 "Error Loading Service Requests"

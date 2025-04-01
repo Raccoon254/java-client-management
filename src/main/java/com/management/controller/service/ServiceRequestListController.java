@@ -502,15 +502,13 @@ public class ServiceRequestListController {
      * Handle adding a new service request
      */
     private void handleAddServiceRequest() {
-        FXMLLoaderUtil.openDialog(
-                "/fxml/service/service_request_form.fxml",
-                "Add New Service Request",
-                mainPane.getScene().getWindow(),
-                (ServiceRequestFormController controller) -> {
-                    controller.setServiceRequestService(serviceRequestService);
-                    controller.setCustomerService(customerService);
-                    controller.setMode(ServiceRequestFormController.Mode.ADD);
-                }
+        ServiceRequestViewController.show(
+                (Stage) mainPane.getScene().getWindow(),
+                serviceRequestService,
+                customerService,
+                technicianService,
+                null,  // null for new service request (not editing)
+                null   // null for no pre-selected customer
         );
 
         // Refresh the list to show the new service request
@@ -526,16 +524,14 @@ public class ServiceRequestListController {
             return;
         }
 
-        FXMLLoaderUtil.openDialog(
-                "/fxml/service/service_request_form.fxml",
-                "Edit Service Request",
-                mainPane.getScene().getWindow(),
-                (ServiceRequestFormController controller) -> {
-                    controller.setServiceRequestService(serviceRequestService);
-                    controller.setCustomerService(customerService);
-                    controller.setMode(ServiceRequestFormController.Mode.EDIT);
-                    controller.loadServiceRequest(selectedServiceRequest);
-                }
+        // Use the ServiceRequestViewController for editing
+        ServiceRequestViewController.show(
+                (Stage) mainPane.getScene().getWindow(),
+                serviceRequestService,
+                customerService,
+                technicianService,
+                selectedServiceRequest,  // Pass the selected service request for editing
+                null                     // No need to pre-select customer as it's already in the service request
         );
 
         // Refresh the list to show the updated service request
