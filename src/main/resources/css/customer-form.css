@@ -1,79 +1,127 @@
-/* Customer Form Specific Styles */
+/* Modern Customer Form Styles */
 
 .form-container {
     -fx-background-color: white;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-padding: 0;
 }
 
-.section-title {
-    -fx-font-size: 20px;
+.form-header {
+    -fx-padding: 24px 30px 20px 30px;
+    -fx-background-color: #1d2957;
+    -fx-background-radius: 12px 12px 0 0;
+}
+
+.form-title {
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: white;
 }
 
-/* Tab styling */
-.customer-tabs {
-    -fx-tab-min-width: 120px;
-}
-
-.customer-tabs .tab-header-area {
+.form-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
     -fx-padding: 5px 0 0 0;
 }
 
-.customer-tabs .tab {
+/* Custom Tabs */
+.custom-tabs-container {
+    -fx-padding: 0 20px;
     -fx-background-color: white;
-    -fx-background-radius: 0;
-    -fx-padding: 10px 15px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.custom-tab-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d;
+    -fx-padding: 15px 20px;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 3px 0;
     -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-min-width: 130px;
 }
 
-.customer-tabs .tab:selected {
-    -fx-background-color: #6c63ff;
-    -fx-border-color: transparent;
+.custom-tab-button:hover {
+    -fx-text-fill: #1d2957;
 }
 
-.customer-tabs .tab:selected .tab-label {
-    -fx-text-fill: white;
+.custom-tab-button.active {
+    -fx-text-fill: #1d2957;
     -fx-font-weight: bold;
+    -fx-border-color: transparent transparent #1d2957 transparent;
 }
 
-.customer-tabs .tab-content-area {
-    -fx-background-color: white;
-    -fx-border-color: #f0f0f0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 0 5px 5px 5px;
+/* Form Content */
+.form-content {
+    -fx-padding: 30px;
+    -fx-spacing: 20px;
 }
 
-.tab-content {
-    -fx-background-color: white;
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1d2957;
+    -fx-padding: 0 0 10px 0;
 }
 
-/* Form elements */
+.form-group {
+    -fx-spacing: 8px;
+}
+
 .form-label {
     -fx-font-size: 14px;
     -fx-text-fill: #495057;
     -fx-font-weight: normal;
 }
 
-.form-field-disabled {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #6c757d;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 4px;
-    -fx-opacity: 0.8;
+.field-container {
+    -fx-spacing: 5px;
 }
 
-.form-buttons {
-    -fx-padding: 15px;
-    -fx-spacing: 10px;
+.form-field {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-padding: 10px 12px;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-min-height: 40px;
+}
+
+.form-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #1d2957;
+    -fx-border-width: 1.5px;
+}
+
+.form-field:hover:focused {
+    -fx-border-color: #b4b4b4;
+}
+
+.form-field-disabled {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #6c757d;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 6px;
+    -fx-opacity: 0.8;
 }
 
 .error-label {
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
-    -fx-padding: 45px 0 0 0;
+    -fx-padding: 2px 0 0 0;
+}
+
+.required-field {
+    -fx-border-color: #dee2e6;
+}
+
+.required-field.error {
+    -fx-border-color: #e74c3c;
 }
 
 .required-label {
@@ -82,41 +130,104 @@
     -fx-font-style: italic;
 }
 
-/* Button styling */
-.success-button {
-    -fx-background-color: #6c63ff;
-    -fx-text-fill: white;
+.required-marker {
+    -fx-text-fill: #e74c3c;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
-    -fx-min-width: 100px;
 }
 
-.success-button:hover {
-    -fx-background-color: #5a52e0;
+/* Grid Layout */
+.form-grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 20px;
 }
 
-.cancel-button {
+/* Form Footer */
+.form-footer {
+    -fx-padding: 20px 30px;
+    -fx-spacing: 15px;
     -fx-background-color: #f8f9fa;
-    -fx-text-fill: #6c757d;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px 0 0 0;
+    -fx-background-radius: 0 0 12px 12px;
 }
 
-.cancel-button:hover {
-    -fx-background-color: #e9ecef;
+/* Buttons */
+.action-button {
+    -fx-min-width: 120px;
+    -fx-min-height: 40px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.primary-button {
+    -fx-background-color: #1d2957;
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: #161f3f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .secondary-button {
-    -fx-background-color: #f8f9fa;
-    -fx-text-fill: #495057;
-    -fx-border-color: #ced4da;
-    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-text-fill: #1d2957;
+    -fx-border-color: #1d2957;
+    -fx-border-width: 1.5px;
 }
 
 .secondary-button:hover {
-    -fx-background-color: #e9ecef;
+    -fx-background-color: rgba(29, 41, 87, 0.05);
 }
 
-.secondary-button:disabled {
-    -fx-opacity: 0.5;
+.cancel-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1.5px;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #f1f3f5;
+}
+
+/* Animation for page transitions */
+.slide-in {
+    -fx-translate-x: 0;
+    -fx-opacity: 1;
+    -fx-transition: all 0.3s ease-out;
+}
+
+.slide-out {
+    -fx-translate-x: -50;
+    -fx-opacity: 0;
+    -fx-transition: all 0.3s ease-in;
+}
+
+/* Progress indicator */
+.progress-indicator {
+    -fx-spacing: 5px;
+    -fx-padding: 0 15px;
+}
+
+.progress-dot {
+    -fx-min-width: 8px;
+    -fx-min-height: 8px;
+    -fx-max-width: 8px;
+    -fx-max-height: 8px;
+    -fx-background-radius: 4px;
+    -fx-background-color: #dee2e6;
+}
+
+.progress-dot.active {
+    -fx-background-color: #1d2957;
+    -fx-effect: dropshadow(three-pass-box, rgba(29, 41, 87, 0.4), 3, 0, 0, 0);
+}
+
+/* Section containers */
+.page-container {
+    -fx-min-height: 400px;
+    -fx-pref-height: 400px;
 }

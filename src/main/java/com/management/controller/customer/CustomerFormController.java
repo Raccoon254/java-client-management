@@ -6,33 +6,61 @@ import com.management.util.AlertUtils;
 import com.management.util.ValidationUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 
 /**
- * Controller for the customer form view (add/edit)
+ * Controller for the step-based customer form view (add/edit)
  */
 public class CustomerFormController {
 
     @FXML private Label titleLabel;
-    @FXML private TabPane formTabPane;
 
-    // Form fields
+    // Navigation buttons
+    @FXML private Button basicInfoButton;
+    @FXML private Button businessButton;
+    @FXML private Button addressButton;
+    @FXML private Button additionalButton;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
+
+    // Content sections
+    @FXML private StackPane contentStack;
+    @FXML private VBox basicInfoSection;
+    @FXML private VBox businessSection;
+    @FXML private VBox addressSection;
+    @FXML private VBox additionalSection;
+
+    // Form fields - Basic Info
     @FXML private TextField customerNumberField;
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
     @FXML private TextField emailField;
     @FXML private TextField phoneField;
-    @FXML private TextField mobileField;
+
+    // Form fields - Business
     @FXML private TextField companyField;
     @FXML private TextField positionField;
     @FXML private TextField businessNameField;
+    @FXML private TextField mobileField;
+
+    // Form fields - Address
     @FXML private TextField streetAddressField;
+    @FXML private TextField cityField;
     @FXML private TextField stateField;
     @FXML private TextField zipCodeField;
+    @FXML private TextField countryField;
+
+    // Form fields - Additional Info
     @FXML private TextField websiteField;
+    @FXML private TextField referredByField;
+    @FXML private TextField tagsField;
 
     // Error labels
     @FXML private Label firstNameError;
@@ -42,15 +70,13 @@ public class CustomerFormController {
     @FXML private Label stateError;
     @FXML private Label zipError;
 
-    // Navigation buttons
-    @FXML private Button prevButton;
-    @FXML private Button nextButton;
-    @FXML private Button saveButton;
-    @FXML private Button cancelButton;
-
     private CustomerService customerService;
     private Customer customer;
     private Mode mode = Mode.ADD;
+
+    // Step management
+    private int currentStep = 0;
+    private final int TOTAL_STEPS = 4;
 
     /**
      * Mode enum for the form (add or edit)
@@ -64,6 +90,21 @@ public class CustomerFormController {
      */
     @FXML
     public void initialize() {
+        // Set up text formatters and validators
+        setupValidators();
+
+        // Set up step-based navigation
+        updateButtonStyles();
+        updateNavigationButtons();
+
+        // Set up actions for navigation buttons
+        setupNavigationButtonActions();
+    }
+
+    /**
+     * Set up validators for form fields
+     */
+    private void setupValidators() {
         // Set up text formatters and validators
         ValidationUtils.setupPhoneTextField(phoneField);
         ValidationUtils.setupPhoneTextField(mobileField);
@@ -100,78 +141,178 @@ public class CustomerFormController {
         zipCodeField.textProperty().addListener((obs, oldVal, newVal) ->
                 ValidationUtils.validateField(zipCodeField, zipError,
                         text -> ValidationUtils.validateZipCode("Zip code", text, false)));
+    }
 
-        // Set up tab navigation buttons
-        prevButton.setOnAction(e -> navigateToPreviousTab());
-        nextButton.setOnAction(e -> navigateToNextTab());
-
-        // Update button states based on current tab
-        formTabPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-            updateNavigationButtons();
-        });
-
-        // Initial button state
-        updateNavigationButtons();
-
-        // Set up action buttons
+    /**
+     * Set up action handlers for navigation buttons
+     */
+    private void setupNavigationButtonActions() {
+        prevButton.setOnAction(e -> handlePrevious());
+        nextButton.setOnAction(e -> handleNext());
         saveButton.setOnAction(e -> handleSave());
         cancelButton.setOnAction(e -> handleCancel());
+
+        // Set navigation button actions
+        basicInfoButton.setOnAction(e -> navigateToStep(0));
+        businessButton.setOnAction(e -> navigateToStep(1));
+        addressButton.setOnAction(e -> navigateToStep(2));
+        additionalButton.setOnAction(e -> navigateToStep(3));
     }
 
     /**
-     * Update navigation button states based on current tab
+     * Show a specific step in the form
+     */
+    @FXML
+    public void showBasicInfo() {
+        navigateToStep(0);
+    }
+
+    @FXML
+    public void showBusiness() {
+        if (validateCurrentStep()) {
+            navigateToStep(1);
+        }
+    }
+
+    @FXML
+    public void showAddress() {
+        if (validateCurrentStep() && (currentStep == 0 ? validateBasicInfo() : true)) {
+            navigateToStep(2);
+        }
+    }
+
+    @FXML
+    public void showAdditional() {
+        if (validateCurrentStep() &&
+                (currentStep == 0 ? validateBasicInfo() : true) &&
+                (currentStep == 2 ? validateAddressInfo() : true)) {
+            navigateToStep(3);
+        }
+    }
+
+    /**
+     * Navigate to a specific step
+     * @param stepIndex The index of the step to navigate to
+     */
+    private void navigateToStep(int stepIndex) {
+        // Ensure index is within bounds
+        if (stepIndex < 0 || stepIndex >= TOTAL_STEPS) {
+            return;
+        }
+
+        // If trying to navigate forward, validate current step first
+        if (stepIndex > currentStep && !validateCurrentStep()) {
+            return;
+        }
+
+        // Hide all sections
+        basicInfoSection.setVisible(false);
+        businessSection.setVisible(false);
+        addressSection.setVisible(false);
+        additionalSection.setVisible(false);
+
+        // Show the selected section
+        switch (stepIndex) {
+            case 0:
+                basicInfoSection.setVisible(true);
+                break;
+            case 1:
+                businessSection.setVisible(true);
+                break;
+            case 2:
+                addressSection.setVisible(true);
+                break;
+            case 3:
+                additionalSection.setVisible(true);
+                break;
+        }
+
+        // Update current step
+        currentStep = stepIndex;
+
+        // Update UI
+        updateButtonStyles();
+        updateNavigationButtons();
+    }
+
+    /**
+     * Update the styles of step buttons to show the active step
+     */
+    private void updateButtonStyles() {
+        // Remove active class from all buttons
+        basicInfoButton.getStyleClass().remove("active-nav-button");
+        businessButton.getStyleClass().remove("active-nav-button");
+        addressButton.getStyleClass().remove("active-nav-button");
+        additionalButton.getStyleClass().remove("active-nav-button");
+
+        // Add active class to current step button
+        switch (currentStep) {
+            case 0:
+                if (!basicInfoButton.getStyleClass().contains("active-nav-button")) {
+                    basicInfoButton.getStyleClass().add("active-nav-button");
+                }
+                break;
+            case 1:
+                if (!businessButton.getStyleClass().contains("active-nav-button")) {
+                    businessButton.getStyleClass().add("active-nav-button");
+                }
+                break;
+            case 2:
+                if (!addressButton.getStyleClass().contains("active-nav-button")) {
+                    addressButton.getStyleClass().add("active-nav-button");
+                }
+                break;
+            case 3:
+                if (!additionalButton.getStyleClass().contains("active-nav-button")) {
+                    additionalButton.getStyleClass().add("active-nav-button");
+                }
+                break;
+        }
+    }
+
+    /**
+     * Update the state of navigation buttons based on current step
      */
     private void updateNavigationButtons() {
-        int currentIndex = formTabPane.getSelectionModel().getSelectedIndex();
-        int lastIndex = formTabPane.getTabs().size() - 1;
-
-        prevButton.setDisable(currentIndex == 0);
-        nextButton.setDisable(currentIndex == lastIndex);
-
-        // Only show save button on the last tab
-        saveButton.setVisible(currentIndex == lastIndex);
+        prevButton.setDisable(currentStep == 0);
+        nextButton.setVisible(currentStep < TOTAL_STEPS - 1);
+        saveButton.setVisible(currentStep == TOTAL_STEPS - 1);
     }
 
     /**
-     * Navigate to the previous tab
+     * Handle the Previous button click
      */
-    private void navigateToPreviousTab() {
-        int currentIndex = formTabPane.getSelectionModel().getSelectedIndex();
-        if (currentIndex > 0) {
-            formTabPane.getSelectionModel().select(currentIndex - 1);
+    @FXML
+    public void handlePrevious() {
+        if (currentStep > 0) {
+            navigateToStep(currentStep - 1);
         }
     }
 
     /**
-     * Navigate to the next tab
+     * Handle the Next button click
      */
-    private void navigateToNextTab() {
-        int currentIndex = formTabPane.getSelectionModel().getSelectedIndex();
-        int tabCount = formTabPane.getTabs().size();
-
-        // Validate the current tab before proceeding
-        if (validateCurrentTab(currentIndex)) {
-            if (currentIndex < tabCount - 1) {
-                formTabPane.getSelectionModel().select(currentIndex + 1);
-            }
-        } else {
-            AlertUtils.showWarningAlert("Validation Error", "Please correct the errors before proceeding.");
+    @FXML
+    public void handleNext() {
+        if (validateCurrentStep() && currentStep < TOTAL_STEPS - 1) {
+            navigateToStep(currentStep + 1);
         }
     }
 
     /**
-     * Validate the current tab
-     * @param tabIndex The index of the tab to validate
-     * @return true if the tab is valid
+     * Validate the current step before proceeding
+     * @return true if the step is valid
      */
-    private boolean validateCurrentTab(int tabIndex) {
-        switch (tabIndex) {
-            case 0: // Basic Information
+    private boolean validateCurrentStep() {
+        switch (currentStep) {
+            case 0:
                 return validateBasicInfo();
-            case 1: // Business Details
-                return true; // No required fields
-            case 2: // Address
+            case 1:
+                return true; // Business info has no required fields
+            case 2:
                 return validateAddressInfo();
+            case 3:
+                return true; // Additional info has no required fields
             default:
                 return true;
         }
@@ -239,18 +380,27 @@ public class CustomerFormController {
         customerNumberField.setText(customer.getCustomerNumber());
         customerNumberField.setDisable(true); // Customer number should not be editable
 
+        // Basic Info
         firstNameField.setText(customer.getFirstName());
         lastNameField.setText(customer.getLastName());
         emailField.setText(customer.getEmail());
         phoneField.setText(customer.getPhoneNumber());
+
+        // Business Info
         mobileField.setText(customer.getMobileNumber());
         companyField.setText(customer.getCompanyName());
         positionField.setText(customer.getPosition());
         businessNameField.setText(customer.getBusinessName());
+
+        // Address Info
         streetAddressField.setText(customer.getStreetAddress());
+        cityField.setText(customer.getCity());
         stateField.setText(customer.getState());
         zipCodeField.setText(customer.getZipCode());
+
+        // Additional Info
         websiteField.setText(customer.getWebsite());
+        // Add handling for new fields if they're in the Customer model
     }
 
     /**
@@ -258,7 +408,7 @@ public class CustomerFormController {
      */
     private void updateFormTitle() {
         if (mode == Mode.ADD) {
-            titleLabel.setText("Add New Customer");
+            titleLabel.setText("New Customer");
             saveButton.setText("Create Customer");
         } else {
             titleLabel.setText("Edit Customer");
@@ -269,9 +419,10 @@ public class CustomerFormController {
     /**
      * Handle saving the customer
      */
-    private void handleSave() {
-        // Validate all tabs
-        boolean isValid = validateAllTabs();
+    @FXML
+    public void handleSave() {
+        // Validate all sections
+        boolean isValid = validateAllSections();
 
         if (!isValid) {
             AlertUtils.showWarningAlert("Validation Error", "Please correct the errors in the form.");
@@ -377,17 +528,24 @@ public class CustomerFormController {
     private Customer createCustomerFromForm() {
         Customer newCustomer = new Customer();
 
+        // Basic Info
         newCustomer.setFirstName(firstNameField.getText());
         newCustomer.setLastName(lastNameField.getText());
         newCustomer.setEmail(emailField.getText());
         newCustomer.setPhoneNumber(phoneField.getText());
+
+        // Business Info
         newCustomer.setMobileNumber(mobileField.getText());
         newCustomer.setCompanyName(companyField.getText());
         newCustomer.setPosition(positionField.getText());
         newCustomer.setBusinessName(businessNameField.getText());
+
+        // Address Info
         newCustomer.setStreetAddress(streetAddressField.getText());
         newCustomer.setState(stateField.getText());
         newCustomer.setZipCode(zipCodeField.getText());
+
+        // Additional Info
         newCustomer.setWebsite(websiteField.getText());
 
         return newCustomer;
@@ -397,36 +555,43 @@ public class CustomerFormController {
      * Update the existing customer with form data
      */
     private void updateCustomerFromForm() {
+        // Basic Info
         customer.setFirstName(firstNameField.getText());
         customer.setLastName(lastNameField.getText());
         customer.setEmail(emailField.getText());
         customer.setPhoneNumber(phoneField.getText());
+
+        // Business Info
         customer.setMobileNumber(mobileField.getText());
         customer.setCompanyName(companyField.getText());
         customer.setPosition(positionField.getText());
         customer.setBusinessName(businessNameField.getText());
+
+        // Address Info
         customer.setStreetAddress(streetAddressField.getText());
         customer.setState(stateField.getText());
         customer.setZipCode(zipCodeField.getText());
+
+        // Additional Info
         customer.setWebsite(websiteField.getText());
     }
 
     /**
-     * Validate all tabs in the form
-     * @return true if all tabs are valid
+     * Validate all sections in the form
+     * @return true if all sections are valid
      */
-    private boolean validateAllTabs() {
+    private boolean validateAllSections() {
         boolean isBasicInfoValid = validateBasicInfo();
         boolean isAddressValid = validateAddressInfo();
 
-        // If any tab is invalid, navigate to that tab
+        // If any section is invalid, navigate to that section
         if (!isBasicInfoValid) {
-            formTabPane.getSelectionModel().select(0);
+            navigateToStep(0);
             return false;
         }
 
         if (!isAddressValid) {
-            formTabPane.getSelectionModel().select(2);
+            navigateToStep(2);
             return false;
         }
 
@@ -436,7 +601,8 @@ public class CustomerFormController {
     /**
      * Handle canceling the form
      */
-    private void handleCancel() {
+    @FXML
+    public void handleCancel() {
         boolean confirmed = AlertUtils.showConfirmationAlert(
                 "Cancel",
                 "Are you sure you want to cancel?",
