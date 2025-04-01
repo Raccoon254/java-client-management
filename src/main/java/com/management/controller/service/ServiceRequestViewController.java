@@ -104,6 +104,9 @@ public class ServiceRequestViewController {
         this.serviceRequestService = serviceRequestService;
         this.customerService = customerService;
         this.technicianService = technicianService;
+
+        // Now that services are set, initialize the view
+        showWizardView();
     }
 
     /**
@@ -141,59 +144,77 @@ public class ServiceRequestViewController {
      * Show the wizard view
      */
     private void showWizardView() {
+        // Ensure we have services before attempting to show the wizard
+        if (serviceRequestService == null || customerService == null || technicianService == null) {
+            return;
+        }
+
         contentContainer.getChildren().clear();
         wizardNavigation.setVisible(true);
 
-        // Create wizard
-        wizard = new WizardFramework();
+        try {
+            // Create wizard
+            wizard = new WizardFramework();
 
-        // Create steps
-        ServiceRequestWizardSteps.CustomerStep customerStep =
-                new ServiceRequestWizardSteps.CustomerStep(customerService, serviceRequest);
+            // Create steps
+            ServiceRequestWizardSteps.CustomerStep customerStep =
+                    new ServiceRequestWizardSteps.CustomerStep(customerService, serviceRequest);
 
-        ServiceRequestWizardSteps.ServiceDetailsStep detailsStep =
-                new ServiceRequestWizardSteps.ServiceDetailsStep(serviceRequest);
+            ServiceRequestWizardSteps.ServiceDetailsStep detailsStep =
+                    new ServiceRequestWizardSteps.ServiceDetailsStep(serviceRequest);
 
-        ServiceRequestWizardSteps.SchedulingStep schedulingStep =
-                new ServiceRequestWizardSteps.SchedulingStep(serviceRequest);
+            ServiceRequestWizardSteps.SchedulingStep schedulingStep =
+                    new ServiceRequestWizardSteps.SchedulingStep(serviceRequest);
 
-        ServiceRequestWizardSteps.LocationStep locationStep =
-                new ServiceRequestWizardSteps.LocationStep(serviceRequest);
+            ServiceRequestWizardSteps.LocationStep locationStep =
+                    new ServiceRequestWizardSteps.LocationStep(serviceRequest);
 
-        ServiceRequestWizardSteps.TechnicianStep technicianStep =
-                new ServiceRequestWizardSteps.TechnicianStep(technicianService, serviceRequest);
+            ServiceRequestWizardSteps.TechnicianStep technicianStep =
+                    new ServiceRequestWizardSteps.TechnicianStep(technicianService, serviceRequest);
 
-        ServiceRequestWizardSteps.CostEstimationStep costStep =
-                new ServiceRequestWizardSteps.CostEstimationStep(serviceRequest);
+            ServiceRequestWizardSteps.CostEstimationStep costStep =
+                    new ServiceRequestWizardSteps.CostEstimationStep(serviceRequest);
 
-        ServiceRequestWizardSteps.ReviewStep reviewStep =
-                new ServiceRequestWizardSteps.ReviewStep(serviceRequest, this::saveServiceRequest);
+            ServiceRequestWizardSteps.ReviewStep reviewStep =
+                    new ServiceRequestWizardSteps.ReviewStep(serviceRequest, this::saveServiceRequest);
 
-        // Add steps to wizard
-        wizard.addStep(customerStep);
-        wizard.addStep(detailsStep);
-        wizard.addStep(schedulingStep);
-        wizard.addStep(locationStep);
-        wizard.addStep(technicianStep);
-        wizard.addStep(costStep);
-        wizard.addStep(reviewStep);
+            // Add steps to wizard
+            wizard.addStep(customerStep);
+            wizard.addStep(detailsStep);
+            wizard.addStep(schedulingStep);
+            wizard.addStep(locationStep);
+            wizard.addStep(technicianStep);
+            wizard.addStep(costStep);
+            wizard.addStep(reviewStep);
 
-        // Pre-select customer if provided
-        if (preselectedCustomer != null && !isEditMode) {
-            serviceRequest.setCustomerId(preselectedCustomer.getCustomerId());
-            serviceRequest.setCustomer(preselectedCustomer);
-        }
+            // Pre-select customer if provided
+            if (preselectedCustomer != null && !isEditMode) {
+                serviceRequest.setCustomerId(preselectedCustomer.getCustomerId());
+                serviceRequest.setCustomer(preselectedCustomer);
+            }
 
-        // Add wizard to container
-        contentContainer.getChildren().add(wizard.getContent());
+            // Add wizard to container
+            contentContainer.getChildren().add(wizard.getContent());
 
-        // Update button states
-        updateNavigationButtons();
+            // Ensure the content is visible
+            wizard.getContent().setVisible(true);
 
-        // Add listener for step changes
-        wizard.currentStepIndexProperty().addListener((obs, oldVal, newVal) -> {
+            // Make sure the first step is visible
+            if (wizard.getTotalSteps() > 0) {
+                wizard.getCurrentStep().getContent().setVisible(true);
+            }
+
+            // Update button states
             updateNavigationButtons();
-        });
+
+            // Add listener for step changes
+            wizard.currentStepIndexProperty().addListener((obs, oldVal, newVal) -> {
+                updateNavigationButtons();
+            });
+        } catch (Exception e) {
+            AlertUtils.showErrorAlert("Error", "Failed to create wizard: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**

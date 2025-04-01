@@ -1,0 +1,58 @@
+.create-menu-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.create-menu-button {
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.create-menu-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.customer-button {
+    -fx-background-color: #3498db; /* Blue */
+}
+
+.customer-button:hover {
+    -fx-background-color: #2980b9; /* Darker Blue */
+}
+
+.technician-button {
+    -fx-background-color: #2ecc71; /* Green */
+}
+
+.technician-button:hover {
+    -fx-background-color: #27ae60; /* Darker Green */
+}
+
+.service-request-button {
+    -fx-background-color: #e74c3c; /* Red */
+}
+
+.service-request-button:hover {
+    -fx-background-color: #c0392b; /* Darker Red */
+}
+
+.quote-button {
+    -fx-background-color: #9b59b6; /* Purple */
+}
+
+.quote-button:hover {
+    -fx-background-color: #8e44ad; /* Darker Purple */
+}
+
+.payment-button {
+    -fx-background-color: #f39c12; /* Orange */
+}
+
+.payment-button:hover {
+    -fx-background-color: #d35400; /* Darker Orange */
+}

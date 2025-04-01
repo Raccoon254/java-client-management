@@ -1,7 +1,9 @@
 package com.management.controller;
 
 import com.management.controller.customer.CustomerFormController;
+import com.management.controller.dialogs.CreateMenuDialogController;
 import com.management.controller.service.ServiceRequestFormController;
+import com.management.controller.service.ServiceRequestViewController;
 import com.management.controller.technician.TechnicianFormController;
 import com.management.dao.implementations.*;
 import com.management.dao.interfaces.*;
@@ -377,39 +379,26 @@ public class MainDashboardController implements DashboardController.DashboardNav
      * Show create menu
      */
     private void showCreateMenu() {
-        Object[] options = {
-                "New Customer",
-                "New Technician",
-                "New Service Request",
-                "New Quote",
-                "New Payment"
-        };
-
-        int choice = AlertUtils.showChoiceDialog(
-                "Create New",
-                "Select an item to create:",
-                "Choose an option below:",
-                options
-        );
-
-        if (choice >= 0) {
-            switch (choice) {
-                case 0:
-                    handleNewCustomer();
-                    break;
-                case 1:
-                    handleNewTechnician();
-                    break;
-                case 2:
-                    handleNewServiceRequest();
-                    break;
-                case 3:
-                    handleNewQuote();
-                    break;
-                case 4:
-                    handleNewPayment();
-                    break;
-            }
+        try {
+            // Use FXMLLoaderUtil to open the create menu dialog
+            Stage parentStage = (Stage) mainBorderPane.getScene().getWindow();
+            FXMLLoaderUtil.openDialog(
+                    "/fxml/dialogs/create_menu_dialog.fxml",
+                    "Create New",
+                    parentStage,
+                    (CreateMenuDialogController controller) -> {
+                        controller.setServices(
+                                customerService,
+                                technicianService,
+                                serviceRequestService,
+                                quoteService,
+                                paymentService
+                        );
+                    }
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtils.showErrorAlert("Error", "An error occurred while opening the create menu.");
         }
     }
 
@@ -538,16 +527,15 @@ public class MainDashboardController implements DashboardController.DashboardNav
      */
     private void handleNewServiceRequest() {
         Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-        FXMLLoaderUtil.openDialog(
-                "/fxml/service/service_request_form.fxml",
-                "New Service Request",
+
+        // Use the ServiceRequestViewController instead of the form controller
+        ServiceRequestViewController.show(
                 stage,
-                (ServiceRequestFormController controller) -> {
-                    controller.setServiceRequestService(serviceRequestService);
-                    controller.setCustomerService(customerService);
-                    controller.initialize();
-                    controller.setMode(ServiceRequestFormController.Mode.ADD);
-                }
+                serviceRequestService,
+                customerService,
+                technicianService,
+                null,  // null for new service request (not editing)
+                null   // null for no pre-selected customer
         );
     }
 
