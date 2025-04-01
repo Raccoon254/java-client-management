@@ -1,10 +1,6 @@
 package com.management.controller;
 
-import com.management.controller.customer.CustomerFormController;
 import com.management.controller.dialogs.CreateMenuDialogController;
-import com.management.controller.service.ServiceRequestFormController;
-import com.management.controller.service.ServiceRequestViewController;
-import com.management.controller.technician.TechnicianFormController;
 import com.management.dao.implementations.*;
 import com.management.dao.interfaces.*;
 import com.management.model.User;
@@ -12,7 +8,6 @@ import com.management.service.*;
 import com.management.util.AlertUtils;
 import com.management.util.FXMLLoaderUtil;
 import com.management.util.GenericPageLoader;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,11 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Controller for the main dashboard
@@ -287,18 +278,6 @@ public class MainDashboardController implements DashboardController.DashboardNav
     }
 
     /**
-     * Show the quotes section
-     */
-    private void showQuotes() {
-        if (currentSection.equals("quotes")) return;
-        currentSection = "quotes";
-
-        if (pageLoader.loadQuotesPage(contentArea)) {
-            updateBreadcrumb("Home > Quotes");
-        }
-    }
-
-    /**
      * Show the payments section
      */
     private void showPayments() {
@@ -437,125 +416,11 @@ public class MainDashboardController implements DashboardController.DashboardNav
     }
 
     /**
-     * Open the about dialog
-     */
-    @FXML
-    private void openAbout() {
-        AlertUtils.showInformationAlert(
-                "About Client Management System",
-                "Client Management System v1.0.0\n\n" +
-                        "A comprehensive system for managing clients, technicians, service requests, quotes, and payments."
-        );
-    }
-
-    /**
-     * Handle logout
-     */
-    @FXML
-    private void handleLogout() {
-        boolean confirmed = AlertUtils.showConfirmationAlert(
-                "Logout",
-                "Are you sure you want to logout?",
-                "You will be returned to the login screen."
-        );
-
-        if (confirmed) {
-            // Clean up resources
-            shutdown();
-
-            // Use FXMLLoaderUtil to change scene to login
-            boolean success = FXMLLoaderUtil.changeScene(
-                    (Stage) mainBorderPane.getScene().getWindow(),
-                    "/fxml/login.fxml",
-                    "Client Management System - Login"
-            );
-
-            if (success) {
-                Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-                stage.setMaximized(false);
-                stage.setResizable(false);
-                stage.centerOnScreen();
-            }
-        }
-    }
-
-    /**
      * Stop the clock when the window is closed
      */
     public void shutdown() {
         if (scheduler != null) {
             scheduler.shutdown();
         }
-    }
-
-    /**
-     * Handle new customer button
-     */
-    private void handleNewCustomer() {
-        Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-        FXMLLoaderUtil.openDialog(
-                "/fxml/customer/customer_form.fxml",
-                "New Customer",
-                stage,
-                (CustomerFormController controller) -> {
-                    controller.setCustomerService(customerService);
-                    controller.initialize();
-                    controller.setMode(CustomerFormController.Mode.ADD);
-                }
-        );
-    }
-
-    /**
-     * Handle new technician button
-     */
-    private void handleNewTechnician() {
-        Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-        FXMLLoaderUtil.openDialog(
-                "/fxml/technician/technician_form.fxml",
-                "New Technician",
-                stage,
-                (TechnicianFormController controller) -> {
-                    controller.setTechnicianService(technicianService);
-                    controller.initialize();
-                    controller.setMode(TechnicianFormController.Mode.ADD);
-                }
-        );
-    }
-
-    /**
-     * Handle new service request button
-     */
-    private void handleNewServiceRequest() {
-        Stage stage = (Stage) mainBorderPane.getScene().getWindow();
-
-        // Use the ServiceRequestViewController instead of the form controller
-        ServiceRequestViewController.show(
-                stage,
-                serviceRequestService,
-                customerService,
-                technicianService,
-                null,  // null for new service request (not editing)
-                null   // null for no pre-selected customer
-        );
-    }
-
-    /**
-     * Handle new quote
-     */
-    private void handleNewQuote() {
-        AlertUtils.showInformationAlert(
-                "New Quote",
-                "The New Quote feature will be implemented in a future version."
-        );
-    }
-
-    /**
-     * Handle new payment
-     */
-    private void handleNewPayment() {
-        AlertUtils.showInformationAlert(
-                "New Payment",
-                "The New Payment feature will be implemented in a future version."
-        );
     }
 }
