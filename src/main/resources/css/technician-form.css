@@ -1,5 +1,6 @@
-/* Modern Customer Form Styles */
-.form-container {
+/* Modern Technician Form Styles */
+
+.technician-form-container {
     -fx-background-color: white;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
     -fx-background-radius: 12px;
@@ -33,25 +34,29 @@
     -fx-border-width: 0 0 1px 0;
 }
 
-.custom-tab-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #6c757d;
-    -fx-padding: 15px 20px;
-    -fx-border-color: transparent transparent transparent transparent;
-    -fx-border-width: 0 0 3px 0;
-    -fx-cursor: hand;
+/* Navigation buttons container */
+.nav-buttons-container {
+    -fx-spacing: 2px;
+}
+
+/* Navigation buttons */
+.nav-button {
+    -fx-background-color: white;
+    -fx-text-fill: black;
     -fx-font-size: 14px;
-    -fx-min-width: 130px;
+    -fx-padding: 10px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
 }
 
-.custom-tab-button:hover {
-    -fx-text-fill: #1d2957;
+.nav-button:hover {
+    -fx-background-color: #f0f0f0;
 }
 
-.custom-tab-button.active {
-    -fx-text-fill: #1d2957;
+.nav-button.active-nav-button {
+    -fx-background-color: #d3d3d3; /* Darker shade for active button */
     -fx-font-weight: bold;
-    -fx-border-color: transparent transparent #1d2957 transparent;
 }
 
 /* Form Content */
@@ -81,7 +86,7 @@
     -fx-spacing: 5px;
 }
 
-.form-field {
+.form-field, .modern-field {
     -fx-background-color: #f8f9fa;
     -fx-background-radius: 6px;
     -fx-border-color: #dee2e6;
@@ -91,13 +96,53 @@
     -fx-min-height: 40px;
 }
 
-.form-field:focused {
+/* ComboBox Styling */
+.combo-box-modern {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-min-height: 40px;
+    -fx-padding: 0 12px;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-font-size: 14px;
+}
+
+.combo-box-modern .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-padding: 8px 12px;
+}
+
+.combo-box-modern .list-cell:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.combo-box-modern .list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 6px 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 0 0 6px 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.combo-box-modern .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box-modern:focused {
     -fx-background-color: white;
     -fx-border-color: #1d2957;
     -fx-border-width: 1.5px;
 }
 
-.form-field:hover:focused {
+.form-field:focused, .modern-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #1d2957;
+    -fx-border-width: 1.5px;
+}
+
+.form-field:hover:focused, .modern-field:hover:focused {
     -fx-border-color: #b4b4b4;
 }
 
@@ -109,7 +154,7 @@
     -fx-opacity: 0.8;
 }
 
-.error-label {
+.error-label, .field-error {
     -fx-text-fill: #e74c3c;
     -fx-font-size: 12px;
     -fx-padding: 2px 0 0 0;
@@ -140,8 +185,14 @@
     -fx-vgap: 20px;
 }
 
-/* Form Footer */
-.form-footer {
+/* Content sections */
+.content-section {
+    -fx-min-height: 400px;
+    -fx-pref-height: 400px;
+}
+
+/* Form Actions */
+.form-actions {
     -fx-padding: 20px 30px;
     -fx-spacing: 15px;
     -fx-background-color: #f8f9fa;
@@ -151,7 +202,25 @@
 }
 
 /* Buttons */
-.action-button {
+.action-button, .nav-action-button {
+    -fx-min-width: 120px;
+    -fx-min-height: 40px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-color: #1d2957;
+    -fx-text-fill: white;
+}
+
+.action-button:hover, .nav-action-button:hover {
+    -fx-background-color: #161f3f;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.save-button {
+    -fx-background-color: #1d2957;
+    -fx-text-fill: white;
     -fx-min-width: 120px;
     -fx-min-height: 40px;
     -fx-background-radius: 6px;
@@ -160,25 +229,9 @@
     -fx-cursor: hand;
 }
 
-.primary-button {
-    -fx-background-color: #1d2957;
-    -fx-text-fill: white;
-}
-
-.primary-button:hover {
+.save-button:hover {
     -fx-background-color: #161f3f;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
-}
-
-.secondary-button {
-    -fx-background-color: white;
-    -fx-text-fill: #1d2957;
-    -fx-border-color: #1d2957;
-    -fx-border-width: 1.5px;
-}
-
-.secondary-button:hover {
-    -fx-background-color: rgba(29, 41, 87, 0.05);
 }
 
 .cancel-button {
@@ -186,6 +239,12 @@
     -fx-text-fill: #6c757d;
     -fx-border-color: #dee2e6;
     -fx-border-width: 1.5px;
+    -fx-min-width: 120px;
+    -fx-min-height: 40px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .cancel-button:hover {
@@ -205,53 +264,29 @@
     -fx-transition: all 0.3s ease-in;
 }
 
-/* Progress indicator */
-.progress-indicator {
-    -fx-spacing: 5px;
-    -fx-padding: 0 15px;
+/* ID Container */
+.id-container {
+    -fx-padding: 10px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
 }
 
-.progress-dot {
-    -fx-min-width: 8px;
-    -fx-min-height: 8px;
-    -fx-max-width: 8px;
-    -fx-max-height: 8px;
-    -fx-background-radius: 4px;
-    -fx-background-color: #dee2e6;
-}
-
-.progress-dot.active {
-    -fx-background-color: #1d2957;
-    -fx-effect: dropshadow(three-pass-box, rgba(29, 41, 87, 0.4), 3, 0, 0, 0);
-}
-
-/* Section containers */
-.page-container {
-    -fx-min-height: 400px;
-    -fx-pref-height: 400px;
-}
-
-/* Navigation buttons container */
-.nav-buttons-container {
-    -fx-spacing: 2px;
-}
-
-/* Navigation buttons */
-.nav-button {
-    -fx-background-color: white;
-    -fx-text-fill: black;
-    -fx-font-size: 14px;
-    -fx-padding: 10px 15px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-cursor: hand;
-}
-
-.nav-button:hover {
-    -fx-background-color: #f0f0f0;
-}
-
-.nav-button.active-nav-button {
-    -fx-background-color: #d3d3d3; /* Darker shade for active button */
+.id-label {
     -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.id-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #1d2957;
+    -fx-font-weight: bold;
+}
+
+/* Button Icon */
+.button-icon {
+    -fx-stroke: white;
+    -fx-fill: transparent;
 }

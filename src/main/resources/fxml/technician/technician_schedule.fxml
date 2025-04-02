@@ -49,9 +49,8 @@
                         <Button fx:id="previousButton" mnemonicParsing="false" text="&lt; Previous" />
                         <Button fx:id="nextButton" mnemonicParsing="false" text="Next &gt;" />
                         <HBox alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
-                            <children>
-                                <Button fx:id="refreshButton" mnemonicParsing="false" styleClass="secondary-button" text="Refresh" />
-                            </children>
+                            <Button fx:id="refreshButton" mnemonicParsing="false" styleClass="secondary-button"
+                                    text="Refresh"/>
                         </HBox>
                     </children>
                     <VBox.margin>
@@ -89,14 +88,12 @@
     </center>
     <bottom>
         <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Button fx:id="exportButton" mnemonicParsing="false" text="Export Schedule" />
-                <Button fx:id="printButton" mnemonicParsing="false" text="Print Schedule" />
-                <Button fx:id="closeButton" mnemonicParsing="false" prefWidth="80.0" text="Close" />
-            </children>
             <BorderPane.margin>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0"/>
             </BorderPane.margin>
+            <Button fx:id="exportButton" mnemonicParsing="false" text="Export Schedule"/>
+            <Button fx:id="printButton" mnemonicParsing="false" text="Print Schedule"/>
+            <Button fx:id="closeButton" mnemonicParsing="false" prefWidth="80.0" text="Close"/>
         </HBox>
     </bottom>
 </BorderPane>

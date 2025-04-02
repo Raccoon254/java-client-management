@@ -285,16 +285,20 @@
                 <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
                     <Label text="* Required fields" styleClass="required-label"/>
                 </HBox>
-                <Button fx:id="prevButton" mnemonicParsing="false" onAction="#handlePrevious" styleClass="nav-action-button">
+                <Button fx:id="prevButton" mnemonicParsing="false" onAction="#handlePrevious">
                     <graphic>
-                        <SVGPath content="M15 19l-7-7 7-7" styleClass="button-icon"/>
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                            <Image url="@../../images/icons/alt-arrow-left-svgrepo-com.png"/>
+                        </ImageView>
                     </graphic>
                     <text>Previous</text>
                 </Button>
-                <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" styleClass="nav-action-button">
+                <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext">
                     <text>Next</text>
                     <graphic>
-                        <SVGPath content="M9 5l7 7-7 7" styleClass="button-icon"/>
+                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                            <Image url="@../../images/icons/alt-arrow-right-svgrepo-com.png"/>
+                        </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" styleClass="cancel-button" text="Cancel"/>
