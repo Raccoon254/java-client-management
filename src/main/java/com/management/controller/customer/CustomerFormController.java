@@ -6,6 +6,7 @@ import com.management.util.AlertUtils;
 import com.management.util.ValidationUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,6 +34,7 @@ public class CustomerFormController {
     // Content sections
     @FXML private StackPane contentStack;
     @FXML private VBox basicInfoSection;
+    @FXML private HBox idContainer;
     @FXML private VBox businessSection;
     @FXML private VBox addressSection;
     @FXML private VBox additionalSection;
@@ -90,6 +92,9 @@ public class CustomerFormController {
      */
     @FXML
     public void initialize() {
+        idContainer.setManaged(false);
+        idContainer.setVisible(false);
+
         // Set up text formatters and validators
         setupValidators();
 

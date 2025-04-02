@@ -17,12 +17,12 @@
 .form-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: #1d2957;
 }
 
 .form-subtitle {
     -fx-font-size: 14px;
-    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-text-fill: rgba(29, 41, 87, 0.8);
     -fx-padding: 5px 0 0 0;
 }
 
@@ -232,24 +232,27 @@
     -fx-pref-height: 400px;
 }
 
+/* Navigation buttons container */
 .nav-buttons-container {
-    -fx-alignment: center;
-    -fx-pref-width: 100%;
+    -fx-spacing: 2px;
 }
 
+/* Navigation buttons */
 .nav-button {
     -fx-background-color: white;
     -fx-text-fill: black;
-    -fx-border-color: #ccc;
-    -fx-border-width: 1px;
-    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
 }
 
 .nav-button:hover {
     -fx-background-color: #f0f0f0;
 }
 
-.active-nav-button {
-    -fx-background-color: #ddd;
+.nav-button.active-nav-button {
+    -fx-background-color: #d3d3d3; /* Darker shade for active button */
     -fx-font-weight: bold;
 }

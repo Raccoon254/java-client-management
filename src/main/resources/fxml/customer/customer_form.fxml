@@ -44,43 +44,49 @@
             </padding>
 
             <!-- Navigation buttons -->
-            <HBox fx:id="navButtonsContainer" spacing="2" styleClass="nav-buttons-container">
-                <Button fx:id="basicInfoButton" text="Basic Info" styleClass="nav-button, active-nav-button" onAction="#showBasicInfo">
+            <GridPane fx:id="navButtonsContainer" styleClass="nav-buttons-container">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="25" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="25" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="25" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="25" />
+                </columnConstraints>
+                <Button fx:id="basicInfoButton" text="Basic Info" styleClass="nav-button, active-nav-button" onAction="#showBasicInfo" GridPane.columnIndex="0">
                     <graphic>
                         <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../../images/icons/user-circle-svgrepo-com.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="businessButton" text="Business" styleClass="nav-button" onAction="#showBusiness">
+                <Button fx:id="businessButton" text="Business" styleClass="nav-button" onAction="#showBusiness" GridPane.columnIndex="1">
                     <graphic>
                         <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../../images/icons/documents-svgrepo-com.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="addressButton" text="Address" styleClass="nav-button" onAction="#showAddress">
+                <Button fx:id="addressButton" text="Address" styleClass="nav-button" onAction="#showAddress" GridPane.columnIndex="2">
                     <graphic>
                         <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../../images/icons/point-on-map-svgrepo-com.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="additionalButton" text="Additional" styleClass="nav-button" onAction="#showAdditional">
+                <Button fx:id="additionalButton" text="Additional" styleClass="nav-button" onAction="#showAdditional" GridPane.columnIndex="3">
                     <graphic>
                         <ImageView fitWidth="30" fitHeight="30" pickOnBounds="true" preserveRatio="true">
                             <Image url="@../../images/icons/chat-unread-svgrepo-com.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-            </HBox>
+            </GridPane>
 
             <!-- Content sections stack -->
             <StackPane fx:id="contentStack" VBox.vgrow="ALWAYS">
 
                 <!-- Basic Information section -->
                 <VBox fx:id="basicInfoSection" spacing="20.0" styleClass="content-section">
-                    <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="id-container">
+                    <HBox fx:id="idContainer" alignment="CENTER_LEFT" spacing="15.0" styleClass="id-container" >
                         <Label styleClass="id-label" text="Customer ID:" />
                         <TextField fx:id="customerNumberField" editable="false" disable="true"
                                    promptText="Automatically generated" styleClass="id-field"/>
