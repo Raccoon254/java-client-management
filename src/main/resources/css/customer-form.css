@@ -231,3 +231,25 @@
     -fx-min-height: 400px;
     -fx-pref-height: 400px;
 }
+
+.nav-buttons-container {
+    -fx-alignment: center;
+    -fx-pref-width: 100%;
+}
+
+.nav-button {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-padding: 10px 20px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.active-nav-button {
+    -fx-background-color: #ddd;
+    -fx-font-weight: bold;
+}
