@@ -109,10 +109,10 @@
     -fx-opacity: 0.8;
 }
 
+
 .error-label {
     -fx-text-fill: #e74c3c;
-    -fx-font-size: 12px;
-    -fx-padding: 2px 0 0 0;
+    -fx-font-size: 10px;
 }
 
 .required-field {

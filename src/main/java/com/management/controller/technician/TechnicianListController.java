@@ -16,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.util.List;
@@ -28,8 +30,18 @@ public class TechnicianListController {
 
     @FXML private BorderPane mainPane;
 
-    // TabPane
-    @FXML private TabPane contentTabPane;
+    // Navigation buttons
+    @FXML private Button technicianManagementBtn;
+    @FXML private Button serviceHistoryBtn;
+    @FXML private Button accountDetailsBtn;
+    @FXML private Button activityLogBtn;
+
+    // Content panes
+    @FXML private StackPane contentStackPane;
+    @FXML private VBox technicianListPane;
+    @FXML private VBox serviceHistoryPane;
+    @FXML private VBox accountDetailsPane;
+    @FXML private VBox activityLogPane;
 
     // Summary labels
     @FXML private Label availableTechnicianCount;
@@ -168,6 +180,9 @@ public class TechnicianListController {
         viewScheduleButton.setOnAction(e -> handleViewSchedule());
         processPaymentButton.setOnAction(e -> handleProcessPayment());
         exportButton.setOnAction(e -> handleExportTechnicians());
+
+        // Show technician list by default
+        showTechnicianManagement();
     }
 
     /**
@@ -457,27 +472,73 @@ public class TechnicianListController {
     }
 
     /**
-     * Show the service history tab
+     * Navigate to a specific section
+     */
+    private void navigateToSection(VBox section) {
+        // Hide all sections
+        technicianListPane.setVisible(false);
+        serviceHistoryPane.setVisible(false);
+        accountDetailsPane.setVisible(false);
+        activityLogPane.setVisible(false);
+
+        // Reset all button styles
+        technicianManagementBtn.getStyleClass().remove("active-nav-button");
+        serviceHistoryBtn.getStyleClass().remove("active-nav-button");
+        accountDetailsBtn.getStyleClass().remove("active-nav-button");
+        activityLogBtn.getStyleClass().remove("active-nav-button");
+
+        // Show the selected section and update active button
+        section.setVisible(true);
+
+        if (section == technicianListPane) {
+            if (!technicianManagementBtn.getStyleClass().contains("active-nav-button")) {
+                technicianManagementBtn.getStyleClass().add("active-nav-button");
+            }
+        } else if (section == serviceHistoryPane) {
+            if (!serviceHistoryBtn.getStyleClass().contains("active-nav-button")) {
+                serviceHistoryBtn.getStyleClass().add("active-nav-button");
+            }
+        } else if (section == accountDetailsPane) {
+            if (!accountDetailsBtn.getStyleClass().contains("active-nav-button")) {
+                accountDetailsBtn.getStyleClass().add("active-nav-button");
+            }
+        } else if (section == activityLogPane) {
+            if (!activityLogBtn.getStyleClass().contains("active-nav-button")) {
+                activityLogBtn.getStyleClass().add("active-nav-button");
+            }
+        }
+    }
+
+    /**
+     * Show the technician management section
+     */
+    @FXML
+    public void showTechnicianManagement() {
+        navigateToSection(technicianListPane);
+    }
+
+    /**
+     * Show the service history section
      */
     @FXML
     public void showServiceHistory() {
-        contentTabPane.getSelectionModel().select(1);
+        navigateToSection(serviceHistoryPane);
     }
 
     /**
-     * Show the account details tab
+     * Show the account details section
      */
     @FXML
     public void showAccountDetails() {
-        contentTabPane.getSelectionModel().select(2);
+        navigateToSection(accountDetailsPane);
     }
 
     /**
-     * Show the activity log tab
+     * Show the activity log section
      */
     @FXML
     public void showActivityLog() {
-        contentTabPane.getSelectionModel().select(3);
+        navigateToSection(activityLogPane);
     }
 
     /**
