@@ -1,5 +1,9 @@
 # Client Management System
 
+## Preview
+This is what you expect the dashboard to look like when you run the application for the first time.
+
+![Screenshot 2025-04-07 at 22.01.50.png](images/Screenshot%202025-04-07%20at%2022.01.50.png)
 ## Overview
 
 This is a comprehensive JavaFX-based Client Management System designed to streamline business operations, including customer management, service requests, technician scheduling, quotes, and payments.
